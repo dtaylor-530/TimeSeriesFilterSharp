@@ -34,8 +34,8 @@ namespace DemoApp
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (!(this.DataContext is MainWindowViewModel))
-                viewmodel = new MainWindowViewModel();
-
+                this.DataContext= new MainWindowViewModel();
+         
             (this.DataContext as MainWindowViewModel).Run();
 
 
@@ -48,7 +48,7 @@ namespace DemoApp
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
             if (!(this.DataContext is MainWindowViewModel))
-                viewmodel = new MainWindowViewModel();
+                this.DataContext = viewmodel;
 
             var d = viewmodel.n;
             var tl = new List<Tuple<double, double>> { new Tuple<double, double>(1, 3) };

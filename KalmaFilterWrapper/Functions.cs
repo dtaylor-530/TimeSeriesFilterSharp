@@ -11,7 +11,7 @@ namespace KalmanFilter.Wrap
 {
 
 
-    internal class FEquation : IFunction
+    public class FEquation : IFunction
     {
         Matrix<double> eq = Matrix.Build.DenseOfColumnArrays(
             new double[][] {
@@ -49,7 +49,7 @@ namespace KalmanFilter.Wrap
 
 
 
-    internal class HEquation : IFunction
+   public class HEquation : IFunction
     {
 
         public Matrix<double> eq { get; set; } = Matrix.Build.DenseOfColumnArrays(

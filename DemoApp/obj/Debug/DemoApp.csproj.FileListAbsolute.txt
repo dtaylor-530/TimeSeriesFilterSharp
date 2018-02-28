@@ -126,3 +126,5 @@ E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSha
 E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\DemoApp\bin\Debug\GeneticAlgorithmWrapper.pdb
 E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\DemoApp\bin\Debug\KalmanFilter.Common.pdb
 E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\DemoApp\bin\Debug\KalmanFilter.pdb
+E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\DemoApp\bin\Debug\KalmanFilterWrapper.dll
+E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\DemoApp\bin\Debug\KalmanFilterWrapper.pdb

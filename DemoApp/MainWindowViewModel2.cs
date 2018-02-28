@@ -15,19 +15,24 @@ namespace DemoApp
     {
         public ObservableCollection<Measurement> Measurements { get; set; } = new ObservableCollection<Measurement>();
         public ObservableCollection<Measurement>Estimates { get; set; } = new ObservableCollection<Measurement>();
+
+
         public void Run()
         {
 
 
             // kernel = OrnsteinKernel(1.0)
-            var kernel = new Kernel(1.0, 64.0, 0.0, 0.0);
+            IKernel kernel = new Kernel(1.0, 64.0, 0.0, 0.0);
 
 
             var gp = new GaussianProcess.Process();
             //Some sample training points.
 
             double[] xpts = new double[10];
-            Normal.Samples(xpts, -1, 2.0);
+            Normal.Samples(xpts, 0, 1);
+
+
+            List<double> x = new List<double>(new double[] { 0.0 });
 
             //var  xpts =Normalrand(10) * 2 - 1
 
@@ -40,31 +45,118 @@ namespace DemoApp
 
             //pylab.figure(0)
             int i = 0;
-            foreach (var elem in xpts)
-            {
-                i++;
-                Measurements.Add(new Measurement { Value = elem ,Time= TimeSpan.FromSeconds(i) });
 
-            }
             i = 0;
             //pylab.figure(0)
-            var range = Enumerable.Range(-100, 200).Select(_ => ((double)_) / 1000);
+            var range = Enumerable.Range(-300, 600).Select(_ => ((double)_) / 100);
+
             foreach (var point in range)
             {
-                i++;
+
                 var prediction = gp.predict(point, xpts, kernel, mC.Item2, t);
+
                 Estimates.Add(new Measurement {
                     Value = prediction.Item1,
                     Variance = prediction.Item2,
-                    Time = TimeSpan.FromSeconds(i)
+                    Time = TimeSpan.FromSeconds(point)
                 });
 
             }
 
 
 
-                NotifyChanged(nameof(Measurements),nameof(Estimates));
+            int k = 0;
+            foreach (var x_ in xpts)
+            {
+                Measurements.Add(new Measurement
+                {
+                    Value = t[k],
+                    Time = TimeSpan.FromSeconds(x_)
+                });
+                k++;
+            }
+
 
         }
+
+
+
+
+        public void Run2()
+        {
+            var gp = new GaussianProcess.Process2();
+
+            List<double> x = new List<double>(new double[] { 0.0 });
+            List<double> y = new List<double>(new double[] { 0.0 });
+
+
+
+            var x_more = new double[] { -2.1, -1.5, 0.3, 1.8, 2.5 };
+            var y_more = new List<double>();
+
+            Random rand = new Random();
+
+            IKernel kernel = new Kernel(1.0, 10.0, 0.0, 0.0);
+
+            //double[] xpts = new double[10];
+            //Normal.Samples(xpts, -1, 2.0);
+            //List<Tuple<double, double>> mus = new List<Tuple<double, double>>();
+
+            foreach (var xm in x_more)
+            {
+                var mus= gp.conditional(xm, x.ToArray(), y.ToArray());
+
+                y_more.Add(  Normal.Sample(rand,mus.Item1,mus.Item2));
+            }
+
+
+
+            var σ_new = gp.exponential_cov(x_more.ToArray(), x_more.ToArray());
+
+
+            var range = Enumerable.Range(-300,600).Select(_ =>((double) _)/100);
+
+
+            //var predictions = new List<Tuple<double, double>>();
+
+            foreach (var i in range)
+            {
+               var prediction= gp.predict(i, x_more, σ_new, y_more.ToArray());
+
+
+                Estimates.Add(new Measurement
+                {
+                    Value = prediction.Item1,
+                    Variance = prediction.Item2,
+                    Time = TimeSpan.FromSeconds(i)
+                });
+
+
+
+           
+
+            }
+
+            int k = 0;
+            foreach (var x_ in x_more)
+            {
+                Measurements.Add(new Measurement
+                {
+                    Value = y_more[k],
+                    Time = TimeSpan.FromSeconds(x_)
+                });
+                k++;
+            }
+
+
+
+
+
+
+
+
+        }
+
+     
     }
 }

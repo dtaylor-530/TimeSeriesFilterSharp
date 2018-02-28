@@ -161,6 +161,10 @@
       <Project>{24f0e1f9-02cb-4750-93d1-fd7bc0c6138f}</Project>
       <Name>GeneticAlgorithmWrapper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\KalmaFilterWrapper\KalmanFilter.Wrap.csproj">
+      <Project>{c0f349ef-5562-47df-8834-cbe09bffe534}</Project>
+      <Name>KalmanFilter.Wrap</Name>
+    </ProjectReference>
     <ProjectReference Include="..\KalmanFilter.Common\KalmanFilter.Common.csproj">
       <Project>{23ef5981-1f41-4b53-8b89-063753850b0b}</Project>
       <Name>KalmanFilter.Common</Name>

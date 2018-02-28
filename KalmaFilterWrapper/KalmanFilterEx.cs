@@ -1,4 +1,5 @@
-﻿using KalmanFilter.Common;
+﻿
+using KalmanFilter.Common;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;

@@ -8,6 +8,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra;
 using System.Collections.Generic;
 using KalmanFilter;
+using KalmanFilter.Wrap;
 using KalmanFilter.Common;
 using AForgeEx;
 
@@ -85,7 +86,7 @@ namespace DemoApp
             int m = 1;
             double alpha = 0.3;
             filter = new Unscented(n, 1);
-            var adaptivefilter = new AdaptiveKalmanFilter.Filter(alpha);
+            var adaptivefilter = new KalmanFilter.Adaptive1(alpha);
 
 
             R = Matrix.Build.Diagonal(n, n, r * r); //covariance of measurement  

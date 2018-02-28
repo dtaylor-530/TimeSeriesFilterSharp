@@ -30,10 +30,11 @@
                 <TabItem Header="Graph">
                     <oxy:Plot  x:Name="Plot1" Grid.Column="0"  >
                         <oxy:Plot.Series>
+                                <oxy:ScatterSeries ItemsSource="{Binding Measurements}"   Title="Measurement"   DataFieldX="Time" DataFieldY="Value" MarkerSize="4" MarkerFill="Red" MarkerType="Square"/>
                                 <oxy:AreaSeries ItemsSource="{Binding Estimates}"  Title="Estimate Deviation"    DataFieldX="Time" DataFieldY="LowerDeviation" DataFieldX2="Time" DataFieldY2="UpperDeviation" />
-                                <oxy:LineSeries ItemsSource="{Binding Measurements}"   Title="Measurement"   DataFieldX="Time" DataFieldY="Value"  MarkerType="Cross"/>
+ 
                                 <oxy:LineSeries ItemsSource="{Binding Estimates}"  Title="Estimate"    DataFieldX="Time" DataFieldY="Value"  />
-                                
+                             
                             </oxy:Plot.Series>
                         <oxy:Plot.Axes>
                             <oxy:LinearAxis Position="Bottom"/>
