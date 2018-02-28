@@ -12,8 +12,8 @@ using GeneticSharp.Domain.Populations;
 using GeneticSharp.Domain.Selections;
 using GeneticSharp.Domain.Terminations;
 
-namespace GeneticAlgorithmSample
-    {
+namespace GeneticAlgorithmWrapper
+{
 
 
 

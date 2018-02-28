@@ -7,6 +7,7 @@ using GaussianProcess;
 using MathNet.Numerics.Distributions;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using KalmanFilter.Common;
 
 namespace DemoApp
 {

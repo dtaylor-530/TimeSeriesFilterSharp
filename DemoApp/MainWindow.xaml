@@ -12,6 +12,7 @@
     <DockPanel>
         <UniformGrid DockPanel.Dock="Top" Height="50">
             <Button Height="30" Width="100" Click="Button_Click" Content="Run"/>
+            <Button Height="30" Width="100" Click="ButtonAdd_Click" Content="Add"/>
             <Button Height="30" Width="100" Click="Button1_Click" Content="Run Genetic"/>
             <Button Height="30" Width="100" Click="Button2_Click" Content="Run GP"/>
         </UniformGrid>

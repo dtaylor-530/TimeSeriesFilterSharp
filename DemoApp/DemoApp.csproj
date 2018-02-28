@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DemoApp</RootNamespace>
     <AssemblyName>DemoApp</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -43,9 +44,6 @@
     </Reference>
     <Reference Include="AForge.Math, Version=2.2.5.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
       <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="DataGrid2DLibrary">
-      <HintPath>..\..\..\WPF Framework Extensions\DataGrid2DTest\DataGrid2DLibrary\obj\Debug\DataGrid2DLibrary.dll</HintPath>
     </Reference>
     <Reference Include="GeneticSharp.Domain, Version=1.1.6601.1437, Culture=neutral, PublicKeyToken=d63d2a65268366c6, processorArchitecture=MSIL">
       <HintPath>..\packages\GeneticSharp.1.2.0\lib\net35\GeneticSharp.Domain.dll</HintPath>
@@ -113,9 +111,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GeneticAlgorithmWrapper.cs" />
-    <Compile Include="GeneticSharpWrapperOuter.cs" />
-    <Compile Include="GeneticSharpWrapperInner.cs" />
+    <Compile Include="AForgeGeneticEx.cs" />
     <Compile Include="INPCBase.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -161,9 +157,17 @@
       <Project>{71a3e646-0e88-43d2-b209-85e632cf37e5}</Project>
       <Name>GaussianProcess</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UnscentedKalmanFilter\UnscentedKalmanFilter.csproj">
+    <ProjectReference Include="..\GeneticAlgorithmWrapper\GeneticAlgorithmWrapper.csproj">
+      <Project>{24f0e1f9-02cb-4750-93d1-fd7bc0c6138f}</Project>
+      <Name>GeneticAlgorithmWrapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KalmanFilter.Common\KalmanFilter.Common.csproj">
+      <Project>{23ef5981-1f41-4b53-8b89-063753850b0b}</Project>
+      <Name>KalmanFilter.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnscentedKalmanFilter\KalmanFilter.csproj">
       <Project>{FADAFD6C-9B9D-444C-B991-398AE5C67712}</Project>
-      <Name>UnscentedKalmanFilter</Name>
+      <Name>KalmanFilter</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

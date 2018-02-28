@@ -1,5 +1,4 @@
-﻿using GeneticAlgorithmSample;
-using GeneticSharp.Domain;
+﻿using GeneticSharp.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +33,9 @@ namespace DemoApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (!(this.DataContext is MainWindowViewModel))
+                viewmodel = new MainWindowViewModel();
+
             (this.DataContext as MainWindowViewModel).Run();
 
 
@@ -41,9 +43,14 @@ namespace DemoApp
 
 
 
+
+
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
-            var d = viewmodel.Dimensions;
+            if (!(this.DataContext is MainWindowViewModel))
+                viewmodel = new MainWindowViewModel();
+
+            var d = viewmodel.n;
             var tl = new List<Tuple<double, double>> { new Tuple<double, double>(1, 3) };
 
 
@@ -51,7 +58,7 @@ namespace DemoApp
 
             tl.AddRange(Enumerable.Range(0, d).Select(_ => new Tuple<double, double>(0, 1000)));
 
-            var GeneticAlgorithm = new GeneticAlgorithmWrapper(tl.ToArray());
+            var GeneticAlgorithm = new  GeneticAlgorithmWrapper.OuterWrap(tl.ToArray());
 
 
             GeneticAlgorithm.Run();
@@ -83,5 +90,19 @@ namespace DemoApp
         }
 
 
+        private void ButtonAdd_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (!(this.DataContext is MainWindowViewModel))
+                viewmodel = new MainWindowViewModel();
+            this.DataContext = viewmodel;
+
+            viewmodel.AddEstimate();
+
+          viewmodel.AddMeasurement();
+        
+
+
+        }
     }
 }

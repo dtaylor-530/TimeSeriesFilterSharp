@@ -55,9 +55,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UnscentedKalmanFilter\UnscentedKalmanFilter.csproj">
+    <ProjectReference Include="..\UnscentedKalmanFilter\KalmanFilter.csproj">
       <Project>{fadafd6c-9b9d-444c-b991-398ae5c67712}</Project>
-      <Name>UnscentedKalmanFilter</Name>
+      <Name>KalmanFilter</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

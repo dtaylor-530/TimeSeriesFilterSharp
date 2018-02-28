@@ -15,9 +15,9 @@ using GeneticSharp.Domain.Terminations;
 using MathNet.Numerics.LinearAlgebra;
 
 
-namespace GeneticAlgorithmSample
+namespace GeneticAlgorithmWrapper
 {
-    public class GeneticAlgorithmWrapper
+    public class OuterWrap
     {
 
         public event Action<double[]> NotifyOfImprovement;
@@ -43,12 +43,13 @@ namespace GeneticAlgorithmSample
 
                 return (ga.BestChromosome as FloatingPointChromosome).ToFloatingPoints();
 
-                
+
 
             }
         }
 
-        public GeneticAlgorithmWrapper(params Tuple<double, double>[] minmax)
+
+        public OuterWrap(params Tuple<double, double>[] minmax)
         {
             latestFitness = 0.0;
 
@@ -63,38 +64,23 @@ namespace GeneticAlgorithmSample
 
 
 
-
-        //public double FunctionToOptimise(double[] values)
-        //{
-
-
-        //    var x1 = values[0];
-        //    var y1 = values[1];
-        //    var x2 = values[2];
-        //    var y2 = values[3];
-
-        //    return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
-        //}
-
-
         public static double FunctionToOptimize(double[] vals)
         {
+            int d = 1;
 
-            var d = 1;// (int)vals[0];
             var r = vals.Skip(1).Take(d).Select(_ => _ / 1000).ToArray();
-            var q = vals.Skip(1+d).Take(d).Select(_=>_/1000).ToArray();
+            var q = vals.Skip(1 + d).Take(d).Select(_ => _ / 1000).ToArray();
+
+           var measurements = GenerateMeasurements(r, q,d);
+
+            BatchUpdate(out List<Tuple<Matrix<double>, Matrix<double>>> estimates, measurements, r, q, d);
+
+            var ErrorSumSquared = measurements.Zip(estimates, (a, b) => Math.Pow(a.Item1[0, 0] - b.Item1[0, 0], 2)).Sum();
+
+            var InverseMeanSquaredError = 1000 / ErrorSumSquared;
 
 
-            Run(out List<Measurement> measurements, out List<Measurement> estimates, out List<Measurement> trueValues, 
-                
-                r, q,100,d);
-           
-            var ErrorSumSquared = measurements.Zip(estimates,(a,b)=> Math.Pow(a.Value-b.Value, 2)).Sum();
-
-            var InverseMeanSquaredError = 1000/ ErrorSumSquared;
-
-
-            var TrueErrorSumSquared = measurements.Zip(trueValues, (a, b) => Math.Pow(a.Value - b.Value, 2)).Sum();
+            //var TrueErrorSumSquared = measurements.Zip(trueValues, (a, b) => Math.Pow(a.Value - b.Value, 2)).Sum();
 
 
             return InverseMeanSquaredError;
@@ -102,62 +88,84 @@ namespace GeneticAlgorithmSample
 
         }
 
-        public static void Run(out List<Measurement> measurements,out List<Measurement> estimates, out List<Measurement> trueValues, double[] q,double[] r, int N=100,int Dimensions=1,double signalNoise =1.3 )
+
+
+
+        public static void BatchUpdate(out List<Tuple<Matrix<double>, Matrix<double>>> estimates,
+            List<Tuple<Matrix<double>, TimeSpan>> measurements, double[] q, double[] r, int Dimensions = 1, double signalNoise = 1.3)
         {
 
-
-            var process = new ProcessBuilder(Dimensions, signalNoise,Equation.Sine);
-
-
-
-
-            var filter = Initialise(r, q, 
-                out Matrix<double> G,out Matrix<double> Q, out Matrix<double> H, out Matrix<double> F,  out Matrix<double> R,
+            var filter = Initialise(r, q,
+                out Matrix<double> G, out Matrix<double> Q, out Matrix<double> H, out Matrix<double> F, out Matrix<double> R,
                 signalNoise, Dimensions);
 
 
 
-            estimates = new List<Measurement>();
-            measurements = new List<Measurement>();
-            trueValues = new List<Measurement>();
+            estimates = new List<Tuple<Matrix<double>, Matrix<double>>>();
+            //measurements = new List<Measurement>();
 
-            for (int k = 1; k < N; k++)
+
+            foreach (var meas in measurements)
             {
 
                 List<double> ddf = new List<double>();
 
-                var z = process.Next(out double actual,out TimeSpan timespan);
+
 
                 filter.Predict(F, G, Q);
 
-                estimates.Add(new Measurement() { Value = filter.State[0, 0], Time = timespan, Variance = filter.Cov[0, 0] });
+                //estimates.Add(new Measurement() { Value = filter.State[0, 0], Time = meas.Time, Variance = filter.Cov[0, 0] });
+                estimates.Add(new Tuple<Matrix<double>, Matrix<double>>(filter.State, filter.Cov));
 
-                measurements.Add(new Measurement() { Value = z[0, 0], Time = timespan });
 
-                trueValues.Add(new Measurement() { Value = actual, Time = timespan, Variance=0 });
 
-                filter.Update(z, H, R);             //ukf 
+                //trueValues.Add(new Measurement() { Value = actual, Time = timespan, Variance=0 });
 
+                filter.Update(meas.Item1, H, R);             //ukf 
 
 
             }
 
 
-        
 
         }
 
 
-
-        public static MathNet.Filtering.Kalman.DiscreteKalmanFilter Initialise(double[] r , double[] q
-            ,out Matrix<double>G, out Matrix<double> Q, out Matrix<double> H, out Matrix<double> F, out Matrix<double> R
-            ,double SignalNoise = 1.2,int Dimensions = 2, MatrixBuilder<double> Mbuilder=null)
+        public static List<Tuple<Matrix<double>, TimeSpan>> GenerateMeasurements(double[] r, double[] q, int d = 1)
         {
 
 
-            Mbuilder = Mbuilder??Matrix<double>.Build;
+ // (int)vals[0];
+         
+            var signalNoise = 1.3;
+
+            var process = new ProcessBuilder(d, signalNoise, Equation.Sine);
+
+            List<Tuple<Matrix<double>, TimeSpan>> measurements = new List<Tuple<Matrix<double>, TimeSpan>>(
+            Enumerable.Range(0, 100).Select(i =>
+            {
+                var z = process.Next(out double actual, out TimeSpan timespan);
+
+                return new Tuple<Matrix<double>, TimeSpan>(z, timespan);
+            }));
+
+
+            return measurements;
+        }
+
+
+
+
+
+        public static MathNet.Filtering.Kalman.DiscreteKalmanFilter Initialise(double[] r, double[] q
+            , out Matrix<double> G, out Matrix<double> Q, out Matrix<double> H, out Matrix<double> F, out Matrix<double> R
+            , double SignalNoise = 1.2, int Dimensions = 2, MatrixBuilder<double> Mbuilder = null)
+        {
+
+
+            Mbuilder = Mbuilder ?? Matrix<double>.Build;
             Random rand = new Random();
-    
+
 
 
             var x = Mbuilder.Random(Dimensions, 1);  //s + q * Matrix.Build.Random(1, 1); //initial state with noise
@@ -168,7 +176,7 @@ namespace GeneticAlgorithmSample
 
 
             G = Mbuilder.Diagonal(Dimensions, Dimensions, 1); //covariance of process
-           Q = Mbuilder.Diagonal(Dimensions, Dimensions, q ); //covariance of process
+            Q = Mbuilder.Diagonal(Dimensions, Dimensions, q); //covariance of process
             H = Mbuilder.Diagonal(Dimensions, Dimensions, 1); //covariance of process
 
             F = null;
@@ -181,7 +189,7 @@ namespace GeneticAlgorithmSample
                 F = Mbuilder.DenseOfColumnArrays(new double[] { 1 });
 
 
-             R = Mbuilder.Diagonal(Dimensions, Dimensions, r); //covariance of measurement  
+            R = Mbuilder.Diagonal(Dimensions, Dimensions, r); //covariance of measurement  
 
 
             return filter;
@@ -212,7 +220,7 @@ namespace GeneticAlgorithmSample
 
             Console.WriteLine(
                             "Generation {0}: (q {1},r {2}) fitness{3}",
-                            ga.GenerationsNumber, x[0],x[1] ,latestFitness);
+                            ga.GenerationsNumber, x[0], x[1], latestFitness);
         }
 
 
@@ -254,7 +262,7 @@ namespace GeneticAlgorithmSample
         double[] lastmeas;
         MatrixBuilder<double> mbuilder;
 
-        public ProcessBuilder( int dimensions,double signalNoise,Equation equation)
+        public ProcessBuilder(int dimensions, double signalNoise, Equation equation)
         {
 
             Dimensions = dimensions;
@@ -272,7 +280,7 @@ namespace GeneticAlgorithmSample
         public static double SineWave(double timespan, double Noise)
         {
 
-            var z=3*(Math.Sin(timespan * 3.14 * 5 / 180) + MathNet.Numerics.Distributions.Normal.Sample(rand, 0.0, Noise));
+            var z = 3 * (Math.Sin(timespan * 3.14 * 5 / 180) + MathNet.Numerics.Distributions.Normal.Sample(rand, 0.0, Noise));
 
 
             return z;
@@ -280,22 +288,22 @@ namespace GeneticAlgorithmSample
         }
 
 
-        public Matrix<double> Next(out double actual,out TimeSpan timespan)
+        public Matrix<double> Next(out double actual, out TimeSpan timespan)
         {
 
             i++;
-    
+
             var iteration = MathNet.Numerics.Distributions.Normal.Sample(rand, i, 1.0);
             timespan = TimeSpan.FromSeconds(iteration);
             actual = ProcessBuilder.SineWave(iteration, SignalNoise);
 
-            var ddf = new List<double>    {  actual };
+            var ddf = new List<double> { actual };
 
             for (int i = 1; i < Dimensions; i++)
-            { 
-                ddf.Add((actual - lastmeas[i])/iteration);
+            {
+                ddf.Add((actual - lastmeas[i]) / iteration);
 
-             }
+            }
 
 
             lastmeas = ddf.ToArray();
@@ -338,7 +346,7 @@ namespace GeneticAlgorithmSample
     }
 
 
-    public enum Equation { Sine}
+    public enum Equation { Sine }
 
 
 

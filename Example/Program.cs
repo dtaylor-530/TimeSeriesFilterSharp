@@ -7,7 +7,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnscentedKalmanFilter;
+using KalmanFilter;
 using ZedGraph;
 
 namespace Example
@@ -16,7 +16,7 @@ namespace Example
     {
         static void Main(string[] args)
         {
-            var filter = new UKF(1, 1);
+            var filter = new Unscented(1, 1);
 
             var n = 1; //number of state
             var q = 0.05; //std of process 
