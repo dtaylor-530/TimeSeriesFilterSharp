@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Collections.ObjectModel;
-using UnscentedKalmanFilter;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra;
 using System.Collections.Generic;
@@ -43,8 +42,8 @@ namespace DemoApp
         //public int Dimensions { get; set; } = 1;
         public double MeanSquaredError { get; private set; }
 
-        public double q { get; set; } = 4;//std of process 
-        public double r { get; set; } = 3;
+        public double q { get; set; } = 2;//std of process 
+        public double r { get; set; } = 1;
         public double SignalNoise { get; set; } = 1.3;
 
         //std of measurement
@@ -83,7 +82,7 @@ namespace DemoApp
         public void Initialise()
         {
 
-            int m = 1;
+            //int m = 1;
             double alpha = 0.3;
             filter = new Unscented(n, 1);
             var adaptivefilter = new KalmanFilter.Adaptive1(alpha);

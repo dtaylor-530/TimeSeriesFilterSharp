@@ -42,7 +42,7 @@ namespace KalmanFilter.Wrap
         //std of measurement
 
 
-        private int N ;
+        private int n ;
 
         Random rand;
 
@@ -58,7 +58,7 @@ namespace KalmanFilter.Wrap
 
 
 
-        public Wrapper(
+        public Wrapper(List<Tuple<TimeSpan, double[]>> z=null,
             int dimensions = 2, double r = 3, double q = 1, double alpha = 0.3,
             double  estimateNoise=3)
 
@@ -66,12 +66,13 @@ namespace KalmanFilter.Wrap
             InitialiseGeneral();
 
             InitialiseParameters(dimensions,r,q,alpha);
+
+            if(z!=null)
+            BatchUpdate(z);
         }
 
 
 
-
-        int k = 0;
 
 
         public void InitialiseGeneral()
@@ -93,8 +94,9 @@ namespace KalmanFilter.Wrap
             EstimateNoise = r;
             ProcessNoise = q;
 
+            this.n = n;
 
-            int m = 1;
+            //int m = 1;
             filter = new Unscented(n, 1);
             var adaptivefilter = new KalmanFilter.Adaptive1(alpha);
 
@@ -126,7 +128,7 @@ namespace KalmanFilter.Wrap
 
             x_ = x.ToArray();
             Means[ts] = x_;
-
+     
             P_ = P.ToArray();
 
             CoVariances[ts] = P_;
@@ -139,12 +141,35 @@ namespace KalmanFilter.Wrap
 
 
 
-
-        public void Update(double[] z)
+        public void Predict(TimeSpan ts)
         {
-       
-            var z_ = Vbuilder.DenseOfArray(z);
-            filter.Update(ref x, ref P, z_, h, R);
+
+            lastTimeSpan = ts;
+
+
+            var xp = filter.Predict(x, P, f, Q, lastTimeSpan.Ticks);
+
+            var x_ = x.ToArray();
+            Means[ts] = x_;
+
+            var  P_ = P.ToArray();
+
+            CoVariances[ts] = P_;
+
+
+
+
+
+        }
+
+
+        public void Update(params double[] z)
+        {
+
+
+            var z_ = CheckZ(z);
+            var zv = Vbuilder.DenseOfArray(z_);
+            filter.Update(ref x, ref P, zv, h, R);
 
 
 
@@ -155,29 +180,33 @@ namespace KalmanFilter.Wrap
 
         public void BatchUpdate( List<Tuple<TimeSpan,double[]>> z)
         {
-             //var x_ =  new double[] { 1, 1 } ;
-             //var P_ =  new double[] { 1, 1 } ;
+            //var x_ =  new double[] { 1, 1 } ;
+            //var P_ =  new double[] { 1, 1 } ;
 
             // x = Vbuilder.DenseOfArray(x_);
             //P = Mbuilder.DenseOfDiagonalArray(P_);
             //var R_= Mbuilder.DenseOfDiagonalArray(R);
+            var lasttimespan = z[0].Item1.Subtract(TimeSpan.FromSeconds(1));
 
             for (int i = 0; i < z.Count(); i++)
             {
-                lastTimeSpan = z[i].Item1;
-                var xp=filter.Predict(x,  P, f, Q, lastTimeSpan.Ticks);
+                var df = (z[i].Item1.Subtract(lastTimeSpan));
+                var xp = filter.Predict(x, P, f, Q, (double)df.TotalDays);
+
 
                 x = xp.Item1;
                 P = xp.Item2;
 
                 Means[z[i].Item1]= x.ToArray();
                 CoVariances[z[i].Item1] = P.ToArray();
-         
 
-                var z_ = Vbuilder.DenseOfArray(z[i].Item2);
-                filter.Update(ref x, ref P, z_, h, R);
+                var z_= CheckZ(z[i].Item2);
+                var zv = Vbuilder.DenseOfArray(z_);
 
 
+                filter.Update(ref x, ref P, zv, h, R);
+
+                lastTimeSpan = z[i].Item1;
 
             }
 
@@ -186,11 +215,36 @@ namespace KalmanFilter.Wrap
 
 
 
+        public  Tuple<TimeSpan,double>[] PositionMeans()
+        {
+
+
+            return Means.Select(_ =>new Tuple<TimeSpan,double>( _.Key, _.Value[0])).ToArray();
+        }
 
 
 
+        private double[] CheckZ(double[] z)
+        {
 
 
+            if (z.Length < n)
+            {
+                var zlist = new List<double>();
+                foreach (var zi in z)
+                    zlist.Add(zi);
+                for (int i = zlist.Count(); i < n; i++)
+                    zlist.Add(0);
+
+                z = zlist.ToArray();
+            }
+            else if (z.Length > n)
+            {
+                throw new Exception("number of parameters greater than expected");
+            }
+
+            return z;
+        }
 
     }
 }

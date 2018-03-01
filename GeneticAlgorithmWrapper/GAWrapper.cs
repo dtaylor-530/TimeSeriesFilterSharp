@@ -171,7 +171,7 @@ namespace GeneticAlgorithmWrapper
             var x = Mbuilder.Random(Dimensions, 1);  //s + q * Matrix.Build.Random(1, 1); //initial state with noise
             var P = Mbuilder.Diagonal(Dimensions, Dimensions, 1); //initial state covariance
 
-            int N = 100;
+     
             var filter = new MathNet.Filtering.Kalman.DiscreteKalmanFilter(x, P);
 
 

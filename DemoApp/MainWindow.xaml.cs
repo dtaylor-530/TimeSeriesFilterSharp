@@ -81,10 +81,28 @@ namespace DemoApp
 
         private void Button2_Click(object sender, RoutedEventArgs e)
         {
-
+            
             var mvm = new MainWindowViewModel2();
             this.DataContext = mvm;
             mvm.Run();
+
+
+        }
+
+
+
+        private void Button3_Click(object sender, RoutedEventArgs e)
+        {
+
+            var mvm = new KalmanFilter.Wrap.Wrapper();
+            var z = KalmanFilter.Common.ProcessBuilder.SineWave(3, 1, 20);
+
+            mvm.BatchUpdate(z.Select(_ => new Tuple<TimeSpan, double[]>(_.Item1, new double[] { _.Item2, 0 })).ToList());
+
+
+            mseries.ItemsSource = z.Select(_ => new KalmanFilter.Common.Measurement {Time = _.Item1, Value = _.Item2 });
+            leseries.ItemsSource=mvm.PositionMeans().Select(_ => new KalmanFilter.Common.Measurement { Time = _.Item1, Value = _.Item2 });
+
 
 
         }

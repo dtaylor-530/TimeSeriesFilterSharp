@@ -44,9 +44,7 @@ namespace DemoApp
             var t = gp.draw_multivariate_gaussian(mC.Item1, mC.Item2);
 
             //pylab.figure(0)
-            int i = 0;
 
-            i = 0;
             //pylab.figure(0)
             var range = Enumerable.Range(-300, 600).Select(_ => ((double)_) / 100);
 

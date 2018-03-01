@@ -10,11 +10,12 @@
         Title="MainWindow" Height="550" Width="525">
 
     <DockPanel>
-        <UniformGrid DockPanel.Dock="Top" Height="50">
-            <Button Height="30" Width="100" Click="Button_Click" Content="Run"/>
-            <Button Height="30" Width="100" Click="ButtonAdd_Click" Content="Add"/>
-            <Button Height="30" Width="100" Click="Button1_Click" Content="Run Genetic"/>
-            <Button Height="30" Width="100" Click="Button2_Click" Content="Run GP"/>
+        <UniformGrid DockPanel.Dock="Top" >
+            <Button Height="30" Width="100" Click="Button_Click" Content="Run" Margin="2"/>
+            <Button Height="30" Width="100" Click="ButtonAdd_Click" Content="Add" Margin="2"/>
+            <Button Height="30" Width="100" Click="Button1_Click" Content="Run Genetic" Margin="2"/>
+            <Button Height="30" Width="100" Click="Button2_Click" Content="Run GP" Margin="2"/>
+            <Button Height="30" Width="100" Click="Button3_Click" Content="Run Basic KF" Margin="2"/>
         </UniformGrid>
         <Grid DockPanel.Dock="Top" Height="230">
             <pt:PropertyGrid SelectedObject="{Binding }"></pt:PropertyGrid>
@@ -30,10 +31,10 @@
                 <TabItem Header="Graph">
                     <oxy:Plot  x:Name="Plot1" Grid.Column="0"  >
                         <oxy:Plot.Series>
-                                <oxy:ScatterSeries ItemsSource="{Binding Measurements}"   Title="Measurement"   DataFieldX="Time" DataFieldY="Value" MarkerSize="4" MarkerFill="Red" MarkerType="Square"/>
+                                <oxy:ScatterSeries Name="mseries" ItemsSource="{Binding Measurements}"   Title="Measurement"   DataFieldX="Time" DataFieldY="Value" MarkerSize="4" MarkerFill="Red" MarkerType="Square"/>
                                 <oxy:AreaSeries ItemsSource="{Binding Estimates}"  Title="Estimate Deviation"    DataFieldX="Time" DataFieldY="LowerDeviation" DataFieldX2="Time" DataFieldY2="UpperDeviation" />
  
-                                <oxy:LineSeries ItemsSource="{Binding Estimates}"  Title="Estimate"    DataFieldX="Time" DataFieldY="Value"  />
+                                <oxy:LineSeries Name="leseries" ItemsSource="{Binding Estimates}"  Title="Estimate"    DataFieldX="Time" DataFieldY="Value"  />
                              
                             </oxy:Plot.Series>
                         <oxy:Plot.Axes>

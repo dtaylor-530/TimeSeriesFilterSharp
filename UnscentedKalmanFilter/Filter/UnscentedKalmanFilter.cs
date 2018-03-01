@@ -55,6 +55,8 @@ namespace KalmanFilter
         /// </summary>
         private Vector<double> Wc;
 
+   
+
         /// <summary>
         /// Kalman Gain
         /// </summary>
@@ -65,14 +67,14 @@ namespace KalmanFilter
         /// <summary>
         /// Innovation
         /// </summary>
-        public Matrix<double> d { get; set; }
+        public Vector<double> d { get; set; }
 
 
 
         /// <summary>
         /// Residual
         /// </summary>
-        public Matrix<double> E { get; set; }
+        public Vector<double> E { get; set; }
 
 
 
@@ -100,13 +102,15 @@ namespace KalmanFilter
             Wm.CopyTo(Wc);
             Wc[0] = Wm[0] + 1 - alpha * alpha + beta;
 
-            E = Matrix.Build.Dense(L, L, 0);
-            K = Matrix.Build.Dense(L, L, 0);
-            d = Matrix.Build.Dense(L, L, 0);
+
+           
             c = Math.Sqrt(c);
+
+
+            //adap = new Adaptive1(0.3);
         }
 
-
+        //Adaptive1 adap;
 
 
 
@@ -119,6 +123,8 @@ namespace KalmanFilter
 
             X = f.Process(X, time);
 
+            //if(innovation!=null)
+            //  Q = adap.UpdateQ(Q,innovation,kalmanGain);
 
             Tuple<Vector<double>, Matrix<double>> utmatrices = UnscentedTransform(X, Wm, Wc, Q);
 
@@ -139,6 +145,9 @@ namespace KalmanFilter
             Matrix<double> Xh = h.Process(Xf);
 
 
+            //if (residual != null)
+            //    R = adap.UpdateR(R, residual, h, P);
+
             Tuple<Vector<double>, Matrix<double>> utmatrices = UnscentedTransform(Xh, Wm, Wc, R);
 
             var zp = utmatrices.Item1;
@@ -152,13 +161,17 @@ namespace KalmanFilter
                 Pxz += Wc[i] * ((Xf.Row(i).Subtract(x)).OuterProduct((Xh.Row(i).Subtract(x))));
             }
 
-            var K = Pxz.Multiply(Pz.Inverse());
+            K= Pxz.Multiply(Pz.Inverse());
 
-            var innovation = K.Multiply(z - zp);
+            d= z - zp;
+            //var correction =Xf+ K.Multiply(d);
 
-            x = x + innovation;
+            x = x + d;
             P = P - K.Multiply(Pz).Multiply(K.Transpose());
 
+            //E = z - h.Process(correction);
+
+   
 
 
         }
@@ -203,6 +216,7 @@ namespace KalmanFilter
 
 
 
+
         /// <summary>
         /// Sigma points around reference point
         /// </summary>
@@ -214,6 +228,7 @@ namespace KalmanFilter
         {
 
             Matrix<double> U = P.Multiply(n + lambda).Cholesky().Factor.Transpose();
+          
 
             Matrix<double> X = Matrix.Build.Dense(2 * n + 1, n);
 

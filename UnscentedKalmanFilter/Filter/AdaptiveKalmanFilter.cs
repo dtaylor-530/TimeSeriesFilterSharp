@@ -33,12 +33,12 @@ namespace KalmanFilter
 
 
 
-        public Matrix<double> UpdateQ(Matrix<double> Q, Matrix<double> innovation, Matrix<double> kalmanGain)
+        public Matrix<double> UpdateQ(Matrix<double> Q, Vector<double> innovation, Matrix<double> kalmanGain)
         {
 
 
-            var xx = Q.Multiply(Alpha) + (1 - Alpha) * (kalmanGain * innovation * innovation.Transpose() * kalmanGain.Transpose());
-
+            //var xx = Q.Multiply(Alpha) + (1 - Alpha) * (kalmanGain * innovation * innovation* kalmanGain.Transpose());
+            var xx = Q.Multiply(Alpha) + (1 - Alpha) * (kalmanGain );
             return xx;
 
 
@@ -83,6 +83,50 @@ namespace KalmanFilter
 
 
             var xx = (kalmanGain * (R + R.Multiply(Alpha)) * kalmanGain.Transpose());
+
+            return xx;
+
+
+        }
+
+
+
+
+
+    }
+
+
+    public class Adaptive3
+    {
+
+        double Alpha;
+
+        public Adaptive3(double alpha)
+        {
+            Alpha = alpha;
+
+
+        }
+
+
+        public Matrix<double> UpdateR(Matrix<double> R, Matrix<double> residual, Matrix<double> transform, Matrix<double> coVariance)
+        {
+
+
+            var xx = (residual) * Alpha;
+
+            return xx;
+
+
+        }
+
+
+
+        public Matrix<double> UpdateQ(Matrix<double> Q, Matrix<double> innovation, Matrix<double> kalmanGain)
+        {
+
+
+            var xx = innovation * Alpha;
 
             return xx;
 

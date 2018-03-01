@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using KalmanFilter;
 using ZedGraph;
+using UnscentedKalmanFilter;
 
 namespace Example
 {
@@ -16,7 +17,7 @@ namespace Example
     {
         static void Main(string[] args)
         {
-            var filter = new Unscented(1, 1);
+            var filter = new UKF(1, 1);
 
             var n = 1; //number of state
             var q = 0.05; //std of process 
@@ -32,15 +33,15 @@ namespace Example
             var xV = Matrix.Build.Dense(n, N, 0); //estmate
             var zV = Matrix.Build.Dense(1, N, 0); //measurement
 
-            //for (int k = 1; k < N; k++)
-            //{
-            //    var z = Matrix.Build.Dense(1,1,Math.Sin(k*3.14*5/180)).Add(Matrix.Build.Random(1, 1).Multiply(r)); //measurments
-            //    zV.SetSubMatrix(0, k, z);                                        //save measurment
-            //    var x_and_P = filter.Update(f, x, P, h, z, Q, R);                //ukf 
-            //    x = x_and_P[0];
-            //    P = x_and_P[1];
-            //    xV.SetColumn(k, x.Column(0).ToArray());                          //save estimate
-            //}
+            for (int k = 1; k < N; k++)
+            {
+                var z = Matrix.Build.Dense(1, 1, Math.Sin(k * 3.14 * 5 / 180)).Add(Matrix.Build.Random(1, 1).Multiply(r)); //measurments
+                zV.SetSubMatrix(0, k, z);                                        //save measurment
+                var x_and_P = filter.Update(f, x, P, h, z, Q, R);                //ukf 
+                x = x_and_P[0];
+                P = x_and_P[1];
+                xV.SetColumn(k, x.Column(0).ToArray());                          //save estimate
+            }
 
             GraphPane myPane = new GraphPane(new RectangleF(0, 0, 3200, 2400), "Unscented Kalman Filter", "number", "measurement");
             PointPairList list_zV = new PointPairList();
