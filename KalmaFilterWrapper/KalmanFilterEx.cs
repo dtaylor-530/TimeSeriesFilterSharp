@@ -36,8 +36,8 @@ namespace KalmanFilter.Wrap
         public double ProcessNoise { get; set; } = 4;//std of process 
         public double EstimateNoise { get; set; } = 3;
         public double SignalNoise { get; set; } = 1.3;
-        public Dictionary<TimeSpan, double[]> Means { get; private set; }
-        public Dictionary<TimeSpan, double[,]> CoVariances { get; private set; }
+        public Dictionary<DateTime, double[]> Means { get; private set; }
+        public Dictionary<DateTime, double[,]> CoVariances { get; private set; }
         //Dictionary<TimeSpan, Vector<double>> Measurements;
         //std of measurement
 
@@ -58,7 +58,7 @@ namespace KalmanFilter.Wrap
 
 
 
-        public Wrapper(List<Tuple<TimeSpan, double[]>> z=null,
+        public Wrapper(List<Tuple<DateTime, double[]>> z=null,
             int dimensions = 2, double r = 3, double q = 1, double alpha = 0.3,
             double  estimateNoise=3)
 
@@ -77,8 +77,8 @@ namespace KalmanFilter.Wrap
 
         public void InitialiseGeneral()
         {
-            Means = new Dictionary<TimeSpan,double[]>();
-            CoVariances = new Dictionary<TimeSpan, double[,]>();
+            Means = new Dictionary<DateTime,double[]>();
+            CoVariances = new Dictionary<DateTime, double[,]>();
             //Measurements = new Dictionary<TimeSpan, Vector<double>>();
             Mbuilder = Matrix<double>.Build;
             Vbuilder = Vector<double>.Build;
@@ -123,15 +123,18 @@ namespace KalmanFilter.Wrap
 
             lastTimeSpan = ts;
 
+            var lastdate = Means.Last().Key;
+
+            var newdate = lastdate + ts;
 
             var xp = filter.Predict(x, P, f, Q, lastTimeSpan.Ticks);
 
             x_ = x.ToArray();
-            Means[ts] = x_;
+            Means[newdate] = x_;
      
             P_ = P.ToArray();
 
-            CoVariances[ts] = P_;
+            CoVariances[newdate] = P_;
 
 
 
@@ -146,15 +149,18 @@ namespace KalmanFilter.Wrap
 
             lastTimeSpan = ts;
 
+            var lastdate = Means.Last().Key;
+
+            var newdate = lastdate + ts;
 
             var xp = filter.Predict(x, P, f, Q, lastTimeSpan.Ticks);
 
             var x_ = x.ToArray();
-            Means[ts] = x_;
+            Means[newdate] = x_;
 
             var  P_ = P.ToArray();
 
-            CoVariances[ts] = P_;
+            CoVariances[newdate] = P_;
 
 
 
@@ -178,7 +184,42 @@ namespace KalmanFilter.Wrap
 
         TimeSpan lastTimeSpan;
 
-        public void BatchUpdate( List<Tuple<TimeSpan,double[]>> z)
+        //public void BatchUpdate( List<Tuple<TimeSpan,double[]>> z)
+        //{
+        //    //var x_ =  new double[] { 1, 1 } ;
+        //    //var P_ =  new double[] { 1, 1 } ;
+
+        //    // x = Vbuilder.DenseOfArray(x_);
+        //    //P = Mbuilder.DenseOfDiagonalArray(P_);
+        //    //var R_= Mbuilder.DenseOfDiagonalArray(R);
+        //    var lastTimeSpan = z[0].Item1.Subtract(TimeSpan.FromSeconds(1));
+
+        //    for (int i = 0; i < z.Count(); i++)
+        //    {
+        //        var df = (z[i].Item1.Subtract(lastTimeSpan));
+        //        var xp = filter.Predict(x, P, f, Q, (double)df.TotalDays);
+
+
+        //        x = xp.Item1;
+        //        P = xp.Item2;
+
+        //        Means[z[i].Item1]= x.ToArray();
+        //        CoVariances[z[i].Item1] = P.ToArray();
+
+        //        var z_= CheckZ(z[i].Item2);
+        //        var zv = Vbuilder.DenseOfArray(z_);
+
+
+        //        filter.Update(ref x, ref P, zv, h, R);
+
+        //        lastTimeSpan = z[i].Item1;
+
+        //    }
+
+
+        //}
+
+        public void BatchUpdate(List<Tuple<DateTime, double[]>> z)
         {
             //var x_ =  new double[] { 1, 1 } ;
             //var P_ =  new double[] { 1, 1 } ;
@@ -186,7 +227,7 @@ namespace KalmanFilter.Wrap
             // x = Vbuilder.DenseOfArray(x_);
             //P = Mbuilder.DenseOfDiagonalArray(P_);
             //var R_= Mbuilder.DenseOfDiagonalArray(R);
-            var lasttimespan = z[0].Item1.Subtract(TimeSpan.FromSeconds(1));
+            var lastTimeSpan = z[0].Item1.Subtract(TimeSpan.FromSeconds(1));
 
             for (int i = 0; i < z.Count(); i++)
             {
@@ -197,10 +238,10 @@ namespace KalmanFilter.Wrap
                 x = xp.Item1;
                 P = xp.Item2;
 
-                Means[z[i].Item1]= x.ToArray();
+                Means[z[i].Item1] = x.ToArray();
                 CoVariances[z[i].Item1] = P.ToArray();
 
-                var z_= CheckZ(z[i].Item2);
+                var z_ = CheckZ(z[i].Item2);
                 var zv = Vbuilder.DenseOfArray(z_);
 
 
@@ -215,12 +256,23 @@ namespace KalmanFilter.Wrap
 
 
 
-        public  Tuple<TimeSpan,double>[] PositionMeans()
+
+
+        public Tuple<DateTime,double>[] PositionMeans()
         {
 
 
-            return Means.Select(_ =>new Tuple<TimeSpan,double>( _.Key, _.Value[0])).ToArray();
+            return Means.Select(_ =>new Tuple<DateTime,double>( _.Key, _.Value[0])).ToArray();
         }
+
+
+        public Tuple<DateTime, double>[] PositionCoVariances()
+        {
+
+
+            return CoVariances.Select(_ => new Tuple<DateTime, double>(_.Key, _.Value[0,0])).ToArray();
+        }
+
 
 
 

@@ -32,7 +32,7 @@
                     <oxy:Plot  x:Name="Plot1" Grid.Column="0"  >
                         <oxy:Plot.Series>
                                 <oxy:ScatterSeries Name="mseries" ItemsSource="{Binding Measurements}"   Title="Measurement"   DataFieldX="Time" DataFieldY="Value" MarkerSize="4" MarkerFill="Red" MarkerType="Square"/>
-                                <oxy:AreaSeries ItemsSource="{Binding Estimates}"  Title="Estimate Deviation"    DataFieldX="Time" DataFieldY="LowerDeviation" DataFieldX2="Time" DataFieldY2="UpperDeviation" />
+                                <oxy:AreaSeries Name="aeseries" ItemsSource="{Binding Estimates}"  Title="Estimate Deviation"    DataFieldX="Time" DataFieldY="LowerDeviation" DataFieldX2="Time" DataFieldY2="UpperDeviation" />
  
                                 <oxy:LineSeries Name="leseries" ItemsSource="{Binding Estimates}"  Title="Estimate"    DataFieldX="Time" DataFieldY="Value"  />
                              

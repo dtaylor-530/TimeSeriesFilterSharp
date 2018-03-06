@@ -48,16 +48,18 @@ namespace DemoApp
             //pylab.figure(0)
             var range = Enumerable.Range(-300, 600).Select(_ => ((double)_) / 100);
 
+            DateTime dt = DateTime.Now;
+
             foreach (var point in range)
             {
 
                 var prediction = gp.predict(point, xpts, kernel, mC.Item2, t);
 
-                Estimates.Add(new Measurement {
-                    Value = prediction.Item1,
-                    Variance = prediction.Item2,
-                    Time = TimeSpan.FromSeconds(point)
-                });
+                Estimates.Add(new Measurement (
+                    value : prediction.Item1,
+                    variance : prediction.Item2,
+                    time : dt+TimeSpan.FromSeconds(point)
+                ));
 
             }
 
@@ -67,10 +69,10 @@ namespace DemoApp
             foreach (var x_ in xpts)
             {
                 Measurements.Add(new Measurement
-                {
-                    Value = t[k],
-                    Time = TimeSpan.FromSeconds(x_)
-                });
+                (
+                    value : t[k],
+                    time :dt+ TimeSpan.FromSeconds(x_)
+                ));
                 k++;
             }
 
@@ -116,6 +118,7 @@ namespace DemoApp
 
 
             //var predictions = new List<Tuple<double, double>>();
+            DateTime dt = new DateTime();
 
             foreach (var i in range)
             {
@@ -123,11 +126,11 @@ namespace DemoApp
 
 
                 Estimates.Add(new Measurement
-                {
-                    Value = prediction.Item1,
-                    Variance = prediction.Item2,
-                    Time = TimeSpan.FromSeconds(i)
-                });
+                (
+                    value : prediction.Item1,
+                    variance : prediction.Item2,
+                    time : dt+TimeSpan.FromSeconds(i)
+                ));
 
 
 
@@ -139,10 +142,10 @@ namespace DemoApp
             foreach (var x_ in x_more)
             {
                 Measurements.Add(new Measurement
-                {
-                    Value = y_more[k],
-                    Time = TimeSpan.FromSeconds(x_)
-                });
+                (
+                    value : y_more[k],
+                    time : dt+ TimeSpan.FromSeconds(x_)
+                ));
                 k++;
             }
 

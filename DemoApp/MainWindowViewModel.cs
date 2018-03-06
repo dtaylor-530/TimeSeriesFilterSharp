@@ -103,6 +103,7 @@ namespace DemoApp
 
         }
 
+        DateTime dt;
 
         public void Run()
         {
@@ -111,8 +112,8 @@ namespace DemoApp
 
             Estimates.Clear();
             Measurements.Clear();
-
-            Estimates.Add(new Measurement() { Value = 0, Time = TimeSpan.FromSeconds(-1), Variance = 0 });
+            dt = new DateTime();
+            Estimates.Add(new Measurement( value : 0, time :dt, variance: 0 ));
 
             k = 0;
             while (k<N)
@@ -137,7 +138,7 @@ namespace DemoApp
             filter.Update(ref x, ref P, z, h, R);                //ukf 
    
 
-            Measurements.Add(new Measurement() { Value = z[0], Time = TimeSpan.FromSeconds(k) });
+            Measurements.Add(new Measurement(value : z[0], time :dt+ TimeSpan.FromSeconds(k) ));
         }
 
 
@@ -150,7 +151,7 @@ namespace DemoApp
              P = x_and_P.Item2;
 
 
-            Estimates.Add(new Measurement() { Value = x_and_P.Item1[0], Time = TimeSpan.FromSeconds(k + 1), Variance = x_and_P.Item2[0, 0] });
+            Estimates.Add(new Measurement(value : x_and_P.Item1[0], time : dt+TimeSpan.FromSeconds(k + 1), variance :x_and_P.Item2[0, 0] ));
 
 
             k++;
@@ -268,9 +269,9 @@ namespace DemoApp
 
                 filter.Predict(F, G, Q);
 
-                Estimates.Add(new Measurement() { Value = filter.State[0, 0], Time = TimeSpan.FromSeconds(k), Variance = filter.Cov[0, 0] });
+                Estimates.Add(new Measurement(value : filter.State[0, 0], time : dt+TimeSpan.FromSeconds(k), variance : filter.Cov[0, 0] ));
 
-                Measurements.Add(new Measurement() { Value = z[0, 0], Time = TimeSpan.FromSeconds(k) });
+                Measurements.Add(new Measurement (value : z[0, 0], time :dt+ TimeSpan.FromSeconds(k) ));
 
                 ErrorSumSquared += Math.Pow(filter.State[0, 0] - z[0, 0], 2);
 

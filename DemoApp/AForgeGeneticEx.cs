@@ -104,7 +104,7 @@ namespace AForgeEx
 
 
 
-
+            var dt = new DateTime();
 
             for (int k = 1; k < N; k++)
             {
@@ -128,9 +128,9 @@ namespace AForgeEx
 
                 filter.Predict(F, G, Q);
 
-                Estimates.Add(new Measurement() { Value = filter.State[0, 0], Time = TimeSpan.FromSeconds(k), Variance = filter.Cov[0, 0] });
+                Estimates.Add(new Measurement(value : filter.State[0, 0], time : dt+TimeSpan.FromSeconds(k), variance : filter.Cov[0, 0] ));
 
-                Measurements.Add(new Measurement() { Value = z[0, 0], Time = TimeSpan.FromSeconds(k) });
+                Measurements.Add(new Measurement( value : z[0, 0], time : dt+TimeSpan.FromSeconds(k) ));
 
                 ErrorSumSquared += Math.Pow(filter.State[0, 0] - z[0, 0], 2);
 

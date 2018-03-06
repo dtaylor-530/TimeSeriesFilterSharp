@@ -8,26 +8,35 @@ namespace KalmanFilter.Common
 {
 
 
-        public struct Measurement
+    public struct Measurement
+    {
+        public Measurement(DateTime time, double value, double variance = 0)
         {
-            private double variance;
-            public double Value { get; set; }
-            public TimeSpan Time { get; set; }
-            public double Variance
-            {
-                get
-                {
-                    return variance;
-                }
-                set
-                {
-                    variance = value;
-                    UpperDeviation = Value + Math.Sqrt(variance);
-                    LowerDeviation = Value - Math.Sqrt(variance);
-                }
-            }
-            public double UpperDeviation { get; private set; }
-            public double LowerDeviation { get; private set; }
+            Time = time;
+            Value = value;
+            Variance = variance;
+            UpperDeviation = variance + Math.Sqrt(variance);
+            LowerDeviation = variance - Math.Sqrt(variance);
         }
-    
+
+        //private double variance;
+        public double Value { get; private set; }
+        public DateTime Time { get; private set; }
+        public double Variance { get; private set; }
+        //{
+        //    get
+        //    {
+        //        return variance;
+        //    }
+        //    set
+        //    {
+        //        variance = value;
+        //        UpperDeviation = Value + Math.Sqrt(variance);
+        //        LowerDeviation = Value - Math.Sqrt(variance);
+        //    }
+        //}
+        public double UpperDeviation { get; private set; }
+        public double LowerDeviation { get; private set; }
+    }
+
 }

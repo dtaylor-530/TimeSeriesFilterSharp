@@ -97,12 +97,14 @@ namespace DemoApp
             var mvm = new KalmanFilter.Wrap.Wrapper();
             var z = KalmanFilter.Common.ProcessBuilder.SineWave(3, 1, 20);
 
-            mvm.BatchUpdate(z.Select(_ => new Tuple<TimeSpan, double[]>(_.Item1, new double[] { _.Item2, 0 })).ToList());
+            mvm.BatchUpdate(z.Select(_ => new Tuple<DateTime, double[]>(_.Item1, new double[] { _.Item2, 0 })).ToList());
 
 
-            mseries.ItemsSource = z.Select(_ => new KalmanFilter.Common.Measurement {Time = _.Item1, Value = _.Item2 });
-            leseries.ItemsSource=mvm.PositionMeans().Select(_ => new KalmanFilter.Common.Measurement { Time = _.Item1, Value = _.Item2 });
+            mseries.ItemsSource = z.Select(_ => new KalmanFilter.Common.Measurement (time : _.Item1, value :_.Item2 ));
 
+            var eseries = mvm.PositionCoVariances().Zip(mvm.PositionMeans(), (a, b) => new KalmanFilter.Common.Measurement ( time : a.Item1, value : b.Item2,variance : a.Item2));
+            leseries.ItemsSource = eseries;
+            aeseries.ItemsSource = eseries;
 
 
         }
