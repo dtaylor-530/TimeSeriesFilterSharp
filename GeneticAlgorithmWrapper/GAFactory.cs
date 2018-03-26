@@ -87,7 +87,7 @@ namespace GeneticAlgorithmWrapper
             {
 
 
-            var population = new Population(20, 40, chromosome.CreateLargeIntChromosone(minmax));
+            var population = new Population(20, 40, chromosome.CreateFloatChromosone(minmax));
 
                 var fitness = new FuncFitness((c) =>
                 {

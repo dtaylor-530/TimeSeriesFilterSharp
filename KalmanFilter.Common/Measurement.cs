@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KalmanFilter.Common
+namespace Filter.Utility
 {
 
 
@@ -15,8 +15,8 @@ namespace KalmanFilter.Common
             Time = time;
             Value = value;
             Variance = variance;
-            UpperDeviation = variance + Math.Sqrt(variance);
-            LowerDeviation = variance - Math.Sqrt(variance);
+            UpperDeviation = value + Math.Sqrt(variance);
+            LowerDeviation = value - Math.Sqrt(variance);
         }
 
         //private double variance;

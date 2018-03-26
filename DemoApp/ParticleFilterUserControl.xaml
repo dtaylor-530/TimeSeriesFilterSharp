@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="DemoApp.ParticleFilterUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DemoApp"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:pt="http://propertytools.org/wpf" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+
+    <DockPanel>
+        <UniformGrid DockPanel.Dock="Top" Height="100"  Rows="1">
+            <WrapPanel >
+
+                <Button Height="30" Width="100" Click="Button_BatchRun" Content="Run" Margin="2"/>
+                <Button Height="30" Width="100" Click="Button_FromFile" Content="Run From File" Margin="2" />
+                <!--<Button Height="30" Width="100" Click="Button_DiscreteDelayed" Content="Run Delayed" Margin="2"/>
+                <Button Height="30" Width="100" Click="Button_DiscreteSmooth" Content="Smooth" Margin="2"/>
+    
+
+                <Button Height="30" Width="100" Click="Button_DiscreteEnsemble" Content="Run Ensemble" Margin="2"/>
+
+                <Button Height="30" Width="100" Click="Button_DiscreteRecursion" Content="Recursion" Margin="2"/>-->
+            </WrapPanel >
+
+
+
+
+
+        </UniformGrid>
+
+        <Grid DockPanel.Dock="Top" Height="130">
+            <pt:PropertyGrid SelectedObject="{Binding }"></pt:PropertyGrid>
+
+        </Grid>
+
+
+
+
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1">
+
+            <ListBox ItemsSource="{Binding Mes}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Height="500" Width="600">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBox Text="33" Grid.Row="0"/>
+
+                            <!--<oxy:PlotView Grid.Row="2"  Model="{Binding PlotModel}"></oxy:PlotView>-->
+                            <oxy:Plot Grid.Row="1"  >
+                                <oxy:Plot.Series>
+                                    <oxy:ScatterSeries ItemsSource="{Binding Measurements}"   Title="Measurement"   DataFieldX="Time" DataFieldY="Value" MarkerSize="4" MarkerFill="Red" MarkerType="Square"/>
+                                    <oxy:AreaSeries  ItemsSource="{Binding Estimates}"  Title="Estimate Deviation"    DataFieldX="Time" DataFieldY="LowerDeviation" DataFieldX2="Time" DataFieldY2="UpperDeviation" />
+
+                                    <oxy:LineSeries  ItemsSource="{Binding Estimates}"  Title="Estimate"    DataFieldX="Time" DataFieldY="Value"  />
+                                    <!--<oxy:ScatterSeries  ItemsSource="{Binding Estimates}"  Title="Particles"  DataFieldX="Time" DataFieldY="Value"  />-->
+                                </oxy:Plot.Series>
+                                <oxy:Plot.Axes>
+                                    <oxy:DateTimeAxis Position="Bottom"/>
+                                    <oxy:LinearAxis Position="Left"/>
+                                </oxy:Plot.Axes>
+                            </oxy:Plot>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid></UniformGrid>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+
+        </Grid>
+    </DockPanel>
+
+
+</UserControl>

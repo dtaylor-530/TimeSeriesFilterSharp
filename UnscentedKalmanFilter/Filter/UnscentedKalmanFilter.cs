@@ -114,7 +114,7 @@ namespace KalmanFilter
 
 
 
-        public Tuple<Vector<double>, Matrix<double>> Predict(Vector<double> x, Matrix<double> P, IFunction f, Matrix<double> Q, double time)
+        public Tuple<Vector<double>, Matrix<double>> Predict(Vector<double> x, Matrix<double> P, ITimeFunction f, Matrix<double> Q, double time)
         {
 
             //sigma points around x

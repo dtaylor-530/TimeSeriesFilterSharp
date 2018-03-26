@@ -60,9 +60,12 @@ namespace GaussianProcess
             var svd = C.Svd();
 
             //[U, S, V] = linalg.svd(C);
-            var A = svd.U.Multiply(Matrix.Build.DenseOfColumnVectors( svd.S.PointwiseSqrt(), svd.S.PointwiseSqrt(), svd.S.PointwiseSqrt(), svd.S.PointwiseSqrt(), svd.S.PointwiseSqrt(), svd.S.PointwiseSqrt(), svd.S.PointwiseSqrt(), svd.S.PointwiseSqrt(), svd.S.PointwiseSqrt(), svd.S.PointwiseSqrt()));
 
+            var sv = svd.S.PointwiseSqrt();
+            var svs = Enumerable.Range(0, mean.Count).Select(_ => sv);
 
+            var A = svd.U.Multiply(Matrix.Build.DenseOfColumnVectors(svs));
+              
 
             return mean + A.Multiply(zvector);
         }

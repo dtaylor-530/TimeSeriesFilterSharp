@@ -86,5 +86,15 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KalmaFilterWrapper\KalmanFilter.Wrap.csproj">
+      <Project>{c0f349ef-5562-47df-8834-cbe09bffe534}</Project>
+      <Name>KalmanFilter.Wrap</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KalmanFilter.Common\Filter.Utility.csproj">
+      <Project>{23ef5981-1f41-4b53-8b89-063753850b0b}</Project>
+      <Name>Filter.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

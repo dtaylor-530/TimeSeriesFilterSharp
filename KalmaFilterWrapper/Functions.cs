@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KalmanFilter.Wrap
+namespace KalmanFilter.Common
 {
 
 
-    public class FEquation : IFunction
+    public class FEquation : ITimeFunction
     {
-        Matrix<double> eq = Matrix.Build.DenseOfColumnArrays(
+        Matrix<double> eq = Matrix<double>.Build.DenseOfColumnArrays(
             new double[][] {
                     new double[] { 1, 0 }, new double[] { 1, 1 } });
 
@@ -30,17 +30,22 @@ namespace KalmanFilter.Wrap
             var sd = x.EnumerateRows().Select((o, i) => Process(x.Row(i), time));
 
 
-            return Matrix.Build.DenseOfRowVectors(sd);
-
+            return Matrix<double>.Build.DenseOfRowVectors(sd);
 
         }
-
 
         public Vector<double> Process(Vector<double> x, double time)
         {
             eq[0, 1] = time;
 
             return eq.Multiply(x);
+        }
+
+        public Matrix<double> Matrix(double time)
+        {
+            eq[0, 1] = time;
+            return eq;
+
         }
     }
 
@@ -49,38 +54,37 @@ namespace KalmanFilter.Wrap
 
 
 
-   public class HEquation : IFunction
+    public class HEquation : IFunction
     {
 
-        public Matrix<double> eq { get; set; } = Matrix.Build.DenseOfColumnArrays(
+        public Matrix<double> eq { get; set; } = Matrix<double>.Build.DenseOfColumnArrays(
             new double[][] {
                     new double[] { 1, 0 }, new double[] { 0, 0 } });
 
 
         public Matrix<double> Process(Matrix<double> x)
         {
-            var sd = x.EnumerateRows().Select((o, i) => Process(x.Row(i), 0));
+            var sd = x.EnumerateRows().Select((o, i) => Process(x.Row(i)));
 
 
-            return Matrix.Build.DenseOfRowVectors(sd);
+            return Matrix<double>.Build.DenseOfRowVectors(sd);
         }
 
 
-        public Matrix<double> Process(Matrix<double> x, double time)
-        {
-            var sd = x.EnumerateRows().Select((o, i) => Process(x.Row(i), time));
-
-            return Matrix.Build.DenseOfRowVectors(sd);
-        }
-
-
-
-
-        public Vector<double> Process(Vector<double> x, double time)
+        public Vector<double> Process(Vector<double> x)
         {
 
             return eq.Multiply(x);
         }
+
+        public Matrix<double> Matrix()
+        {
+
+            return eq;
+
+        }
+
+
     }
 
 }

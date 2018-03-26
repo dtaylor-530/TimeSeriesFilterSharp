@@ -1,0 +1,496 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MathNet.Filtering.Kalman</name>
+    </assembly>
+    <members>
+        <member name="T:MathNet.Filtering.Kalman.DiscreteKalmanFilter">
+            <summary>
+            <para>The <c>DiscreteTimeKalmanFilter</c> is generally used in digital computer
+            implementations of the Kalman Filter. As the name suggests, it is used
+            when the state of the system and updates are available at discrete points
+            in time.</para>
+            <para>This is the most general form of the discrete time Kalman Filter.
+            Other, more specialized forms are available if discrete measurements are
+            available at fixed time intervals.</para>
+            </summary>
+            <remarks>This implementation uses the most common form of the discrete time
+            Kalman Filter:
+            <code>
+            Prediction: x(k|k-1) = F(k-1) * x(k-1|k-1)
+                        P(k|k-1) = F(k-1)*P(k-1|k-1)*F(k-1) + G(k-1)*Q(k-1)*G'(k-1)
+            Update:     S(k) = H(k)*P(k|k-1)*H'(k) + R(k)
+                        K(k) = P(k|k-1)*H'(k)*S^(-1)(k)
+                        P(k|k) = (I-K(k)*H(k))*P(k|k-1)
+                        x(k|k) = x(k|k-1)+K(k)*(z(k)-H(k)*x(k|k-1))
+            </code></remarks>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.DiscreteKalmanFilter.Cov">
+            <summary>
+            The covariance of the current state of the filter. Higher covariances
+            indicate a lower confidence in the state estimate.
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.DiscreteKalmanFilter.State">
+            <summary>
+            The best estimate of the current state of the system.
+            </summary>
+        </member>
+        <member name="F:MathNet.Filtering.Kalman.DiscreteKalmanFilter.x">
+            <summary>
+            The current state of the system.
+            </summary>
+        </member>
+        <member name="F:MathNet.Filtering.Kalman.DiscreteKalmanFilter.P">
+            <summary>
+            The current covariance of the estimated state of the system.
+            </summary>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.DiscreteKalmanFilter.#ctor(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Creates a new Discrete Time Kalman Filter with the given values for
+            the initial state and the covariance of that state.
+            </summary>
+            <param name="x0">The best estimate of the initial state of the estimate.</param>
+            <param name="P0">The covariance of the initial state estimate. If unsure
+            about initial state, set to a large value</param>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.DiscreteKalmanFilter.Predict(MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Perform a discrete time prediction of the system state.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the given state
+            transition matrix does not have the same number of row/columns as there
+            are variables in the state vector.</exception>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.DiscreteKalmanFilter.Predict(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Preform a discrete time prediction of the system state.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <param name="Q">A plant noise covariance matrix.</param>
+            <exception cref="T:System.ArgumentException">Thrown when F and Q are not
+            square matrices with the same number of rows and columns as there are
+            rows in the state matrix.</exception>
+            <remarks>Performs a prediction of the next state of the Kalman Filter,
+            where there is plant noise. The covariance matrix of the plant noise, in
+            this case, is a square matrix corresponding to the state transition and
+            the state of the system.</remarks>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.DiscreteKalmanFilter.Predict(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Perform a discrete time prediction of the system state.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <param name="G">Noise coupling matrix.</param>
+            <param name="Q">Plant noise covariance.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the column and row
+            counts for the given matrices are incorrect.</exception>
+            <remarks>
+            Performs a prediction of the next state of the Kalman Filter, given
+            a description of the dynamic equations of the system, the covariance of
+            the plant noise affecting the system and the equations that describe
+            the effect on the system of that plant noise.
+            </remarks>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.DiscreteKalmanFilter.Update(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Updates the state of the system based on the given noisy measurements,
+            a description of how those measurements relate to the system, and a
+            covariance <c>Matrix</c> to describe the noise of the system.
+            </summary>
+            <param name="z">The measurements of the system.</param>
+            <param name="H">Measurement model.</param>
+            <param name="R">Covariance of measurements.</param>
+            <exception cref="T:System.ArgumentException">Thrown when given matrices
+            are of the incorrect size.</exception>
+        </member>
+        <member name="T:MathNet.Filtering.Kalman.IKalmanFilter">
+            <summary>
+            <para>An interface to describe a Kalman Filter. A Kalman filter is a
+            recursive solution to the general dynamic estimation problem for the
+            important special case of linear system models and Gaussian noise.
+            </para>
+            <para>The Kalman Filter uses a predictor-corrector structure, in which
+            if a measurement of the system is available at time <italic>t</italic>,
+            we first call the Predict function, to estimate the state of the system
+            at time <italic>t</italic>. We then call the Update function to
+            correct the estimate of state, based on the noisy measurement.</para>
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.IKalmanFilter.Cov">
+            <summary>
+            The covariance of the current state estimate.
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.IKalmanFilter.State">
+            <summary>
+            The current best estimate of the state of the system.
+            </summary>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.IKalmanFilter.Predict(MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Performs a prediction of the next state of the system.
+            </summary>
+            <param name="F">The state transition matrix.</param>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.IKalmanFilter.Predict(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Perform a prediction of the next state of the system.
+            </summary>
+            <param name="F">The state transition matrix.</param>
+            <param name="G">The linear equations to describe the effect of the noise
+            on the system.</param>
+            <param name="Q">The covariance of the noise acting on the system.</param>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.IKalmanFilter.Update(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Updates the state estimate and covariance of the system based on the
+            given measurement.
+            </summary>
+            <param name="z">The measurements of the system.</param>
+            <param name="H">Linear equations to describe relationship between
+            measurements and state variables.</param>
+            <param name="R">The covariance matrix of the measurements.</param>
+        </member>
+        <member name="T:MathNet.Filtering.Kalman.KalmanFilter">
+            <summary>
+            Abstract class that contains static methods to assist in the development
+            of Kalman Filters.
+            </summary>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.KalmanFilter.CheckInitialParameters(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Checks that a state vector and covariance matrix are of the correct
+            dimensions.
+            </summary>
+            <param name="x0">State vector.</param>
+            <param name="P0">Covariance matrix.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the x0 matrix is not
+            a column vector, or when the P0 matrix is not a square matrix of the same order
+            as the number of state variables.</exception>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.KalmanFilter.CheckPredictParameters(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Filtering.Kalman.IKalmanFilter)">
+            <summary>
+            Checks that the given matrices for prediction are the correct dimensions.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <param name="G">Noise coupling matrix.</param>
+            <param name="Q">Noise process covariance.</param>
+            <param name="filter">Filter being predicted.</param>
+            <exception cref="T:System.ArgumentException">Thrown when:
+            <list type="bullet"><item>F is non-square with same rows/cols as state
+            the number of state variables.</item>
+            <item>G does not have same number of columns as number of state variables
+            and rows as Q.</item>
+            <item>Q is non-square.</item>
+            </list></exception>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.KalmanFilter.CheckPredictParameters(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Filtering.Kalman.IKalmanFilter)">
+            <summary>
+            Checks that the given prediction matrices are the correct dimension.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <param name="Q">Noise covariance matrix.</param>
+            <param name="filter">Filter being predicted.</param>
+            <exception cref="T:System.ArgumentException">Thrown when either transition
+            or process noise matrices are non-square and/or have a number of rows/cols not
+            equal to the number of state variables for the filter.</exception>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.KalmanFilter.CheckPredictParameters(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Filtering.Kalman.IKalmanFilter)">
+            <summary>
+            Checks the state transition matrix is the correct dimension.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <param name="filter">Filter being predicted.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the transition
+            matrix is non-square or does not have the same number of rows/cols as there
+            are state variables in the given filter.</exception>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.KalmanFilter.CheckUpdateParameters(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Filtering.Kalman.IKalmanFilter)">
+            <summary>
+            Checks the given update parameters are of the correct dimension.
+            </summary>
+            <param name="z">Measurement matrix.</param>
+            <param name="H">Measurement sensitivity matrix.</param>
+            <param name="R">Measurement covariance matrix.</param>
+            <param name="filter">Filter being updated.</param>
+            <exception cref="T:System.ArgumentException">Thrown when:
+            <list type="bullet"><item>z is not a column vector.</item>
+            <item>H does not have same number of rows as z and columns as R.</item>
+            <item>R is non square.</item></list></exception>
+        </member>
+        <member name="T:MathNet.Filtering.Kalman.InformationFilter">
+            <summary>
+            An alternate form of the Discrete Kalman Filter.
+            </summary>
+            <remarks>The Information filter stores and works with the inverse of the
+            covariance matrix. The information filter has a more computationally complex
+            prediction, and a less complex update. This makes it suitable for situations
+            where large numbers of measurements are used for state estimates, or when
+            the state of the system does not need to be known too frequently.</remarks>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.InformationFilter.Cov">
+            <summary>
+            The covariance of the current state estimate.
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.InformationFilter.State">
+            <summary>
+            The estimate of the state of the system.
+            </summary>
+            <remarks>Examination of system state requires an inversion of the covariance
+            matrix for the information filter, and is quite expensive for large systems.</remarks>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.InformationFilter.InverseCov">
+            <summary>
+            The inverse of the covariance of the current state estimate.
+            </summary>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.InformationFilter.#ctor(MathNet.Filtering.Kalman.IKalmanFilter)">
+            <summary>
+            Creates an Information Filter from a given Kalman Filter.
+            </summary>
+            <param name="kf">The filter used to derive the information filter.</param>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.InformationFilter.#ctor(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Creates an Information filter with the given initial state.
+            </summary>
+            <param name="x0">Initial estimate of state variables.</param>
+            <param name="P0">Covariance of state variable estimates.</param>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.InformationFilter.#ctor(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},System.Boolean)">
+            <summary>
+            Creates an Information filter specifying whether the covariance and state
+            have been 'inverted'.
+            </summary>
+            <param name="state">The initial estimate of the state of the system.</param>
+            <param name="cov">The covariance of the initial state estimate.</param>
+            <param name="inverted">Has covariance/state been converted to information
+            filter form?</param>
+            <remarks>This behaves the same as other constructors if the given boolean is false.
+            Otherwise, in relation to the given state/covariance should satisfy:<BR></BR>
+            <C>cov = J = P0 ^ -1, state = y = J * x0.</C></remarks>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.InformationFilter.Predict(MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Perform a discrete time prediction of the system state.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the given state
+            transition matrix does not have the same number of row/columns as there
+            are variables in the state vector.</exception>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.InformationFilter.Predict(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Preform a discrete time prediction of the system state.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <param name="Q">A plant noise covariance matrix.</param>
+            <exception cref="T:System.ArgumentException">Thrown when F and Q are not
+            square matrices with the same number of rows and columns as there are
+            rows in the state matrix.</exception>
+            <remarks>Performs a prediction of the next state of the Kalman Filter,
+            where there is plant noise. The covariance matrix of the plant noise, in
+            this case, is a square matrix corresponding to the state transition and
+            the state of the system.</remarks>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.InformationFilter.Predict(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Perform a discrete time prediction of the system state.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <param name="G">Noise coupling matrix.</param>
+            <param name="Q">Plant noise covariance.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the column and row
+            counts for the given matrices are incorrect.</exception>
+            <remarks>
+            Performs a prediction of the next state of the Kalman Filter, given
+            a description of the dynamic equations of the system, the covariance of
+            the plant noise affecting the system and the equations that describe
+            the effect on the system of that plant noise.
+            </remarks>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.InformationFilter.Update(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Updates the state of the system based on the given noisy measurements,
+            a description of how those measurements relate to the system, and a
+            covariance <c>Matrix</c> to describe the noise of the system.
+            </summary>
+            <param name="z">The measurements of the system.</param>
+            <param name="H">Measurement model.</param>
+            <param name="R">Covariance of measurements.</param>
+            <exception cref="T:System.ArgumentException">Thrown when given matrices
+            are of the incorrect size.</exception>
+        </member>
+        <member name="F:MathNet.Filtering.Kalman.InformationFilter.J">
+            <summary>
+            Inverse of covariance matrix.
+            </summary>
+        </member>
+        <member name="F:MathNet.Filtering.Kalman.InformationFilter.y">
+            <summary>
+            State of information filter.
+            </summary>
+        </member>
+        <member name="F:MathNet.Filtering.Kalman.InformationFilter.I">
+            <summary>
+            Identity matrix used in operations.
+            </summary>
+        </member>
+        <member name="T:MathNet.Filtering.Kalman.SquareRootFilter">
+            <summary>
+            An alternate form of the discrete time kalman filter, less prone to roundoff
+            errors.
+            </summary>
+            <remarks>Square root filtering is designed to produce more stable covariance
+            matrices by performing decomposition of the covariance matrix to ensure that
+            roundoff errors do not occur.
+            <para>This particular implementation stores the covariance in a UDU' decomposed
+            form, and uses a Thornton UD update and a Bierman observational update algorithm.
+            This means that there are no square roots performed as part of this.</para>
+            </remarks>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.SquareRootFilter.State">
+            <summary>
+            The estimate of the current state of the system.
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.SquareRootFilter.Cov">
+            <summary>
+            The covariance of the state estimate.
+            </summary>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.SquareRootFilter.#ctor(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Creates a square root filter with given initial state.
+            </summary>
+            <param name="x0">Initial state estimate.</param>
+            <param name="P0">Covariance of initial state estimate.</param>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.SquareRootFilter.Predict(MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Performs a prediction of the state of the system after a given transition.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the given state
+            transition matrix does not have the same number of row/columns as there
+            are variables in the state vector.</exception>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.SquareRootFilter.Predict(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Performs a prediction of the state of the system after a given transition.
+            </summary>
+            <param name="F">State transition matrix.</param>
+            <param name="G">Noise coupling matrix.</param>
+            <param name="Q">Noise covariance matrix.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the given matrices
+            are not the correct dimensions.</exception>
+        </member>
+        <member name="M:MathNet.Filtering.Kalman.SquareRootFilter.Update(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
+            <summary>
+            Updates the state of the system based on the given noisy measurements,
+            a description of how those measurements relate to the system, and a
+            covariance <c>Matrix</c> to describe the noise of the system.
+            </summary>
+            <param name="z">The measurements of the system.</param>
+            <param name="H">Measurement model.</param>
+            <param name="R">Covariance of measurements.</param>
+            <exception cref="T:System.ArgumentException">Thrown when given matrices
+            are of the incorrect size.</exception>
+        </member>
+        <member name="F:MathNet.Filtering.Kalman.SquareRootFilter.U">
+            <summary>
+            Upper unit triangular matrix of decomposed covariance.
+            </summary>
+        </member>
+        <member name="F:MathNet.Filtering.Kalman.SquareRootFilter.D">
+            <summary>
+            Diagonal matrix of decomposed covariance.
+            </summary>
+        </member>
+        <member name="F:MathNet.Filtering.Kalman.SquareRootFilter.x">
+            <summary>
+            State estimate of system.
+            </summary>
+        </member>
+        <member name="T:MathNet.Filtering.Kalman.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.ArgumentEvenNumberOfCoefficients">
+            <summary>
+              Looks up a localized string similar to Even number of coefficients required..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.InvalidWindowFunctionException">
+            <summary>
+              Looks up a localized string similar to Windowing function is not valid..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.KFCovarianceIncorrectSize">
+            <summary>
+              Looks up a localized string similar to Covariance Matrix must have same number of row/cols as state variable..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.KFCovarianceNotSquare">
+            <summary>
+              Looks up a localized string similar to Covariance matrix must be square..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.KFMeasureCovarainceMalformed">
+            <summary>
+              Looks up a localized string similar to Measurement covariance should be a square matrix with rows/cols equal to number of measurements..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.KFMeasurementVectorMalformed">
+            <summary>
+              Looks up a localized string similar to Measurements should be a single column matrix..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.KFMeasureSensitivityMalformed">
+            <summary>
+              Looks up a localized string similar to Measurement sensitivity matrix should contain same number of rows as measurement matrix and columns as there are state variables..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.KFNoiseCouplingMalformed">
+            <summary>
+              Looks up a localized string similar to Noise coupling matrix should have number of rows equal to number of state variables, and columns equal to process noise rows..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.KFNoiseCovarianceMalformed">
+            <summary>
+              Looks up a localized string similar to Noise Covariance matrix should be square..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.KFSquareNoiseCouplingMalformed">
+            <summary>
+              Looks up a localized string similar to Square noise covariance matrices should have same number of rows/cols as state variables..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.KFStateNotColumnVector">
+            <summary>
+              Looks up a localized string similar to Kalman Filter state must be a column vector..
+            </summary>
+        </member>
+        <member name="P:MathNet.Filtering.Kalman.Properties.Resources.KFStateTransitionMalformed">
+            <summary>
+              Looks up a localized string similar to State Transition should be square matrix with same rows/cols as state variables..
+            </summary>
+        </member>
+    </members>
+</doc>

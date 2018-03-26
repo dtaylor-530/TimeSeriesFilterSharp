@@ -8,21 +8,32 @@ using MathNet.Numerics.LinearAlgebra;
 using System.Collections.Generic;
 using KalmanFilter;
 using KalmanFilter.Wrap;
-using KalmanFilter.Common;
+
 using AForgeEx;
+using System.Threading.Tasks;
+using MathNet.Filtering.Kalman;
+using Filter.Utility;
+using KalmanFilter.Common;
 
 namespace DemoApp
 {
-    public class MainWindowViewModel : INPCBase
+
+
+
+
+    public class MainWindowViewModel : Filter.ViewModel.INPCBase
     {
         [PropertyTools.DataAnnotations.Browsable(false)]
+        
+
         public ObservableCollection<Measurement> Measurements { get; set; }
         [PropertyTools.DataAnnotations.Browsable(false)]
         public ObservableCollection<Measurement> Estimates { get; set; }
 
-        [PropertyTools.DataAnnotations.Browsable(false)]
-        ObservableCollection<ObservableCollection<Measurement>> SmoothedEstimates;
-            
+
+        private List<Tuple<Matrix<double>, Matrix<double>>> _estimates;
+
+
         Matrix<double> Q { get; set; }
 
         Matrix<double> R { get; set; }
@@ -36,6 +47,9 @@ namespace DemoApp
 
         Matrix<double> H { get; set; }
         Matrix<double> F { get; set; }
+
+        private DiscreteKalmanFilter dfilter;
+
         Matrix<double> G { get; set; }
 
 
@@ -60,6 +74,8 @@ namespace DemoApp
         {
             Measurements = new ObservableCollection<Measurement>();
             Estimates = new ObservableCollection<Measurement>();
+            //Estimates = new ObservableCollection<Measurement>();
+            //Estimates = new ObservableCollection<Measurement>();
             Mbuilder = Matrix<double>.Build;
             Vbuilder = Vector<double>.Build;
             rand = new Random();
@@ -69,7 +85,7 @@ namespace DemoApp
 
         public int n = 2;
 
-        NoiseGenerator ng;
+
 
         Unscented filter;
 
@@ -85,20 +101,20 @@ namespace DemoApp
             //int m = 1;
             double alpha = 0.3;
             filter = new Unscented(n, 1);
-            var adaptivefilter = new KalmanFilter.Adaptive1(alpha);
+            var adaptivefilter = new KalmanFilter.AEKF(alpha);
 
 
             R = Matrix.Build.Diagonal(n, n, r * r); //covariance of measurement  
-            Q = Matrix.Build.Diagonal(n,n, q * q); //covariance of process
-    
+            Q = Matrix.Build.Diagonal(n, n, q * q); //covariance of process
+
 
             f = new FEquation(); //nonlinear state equations
             h = new HEquation(); //measurement equation
             x = Vector<double>.Build.Random(n, 1);  //s + q * Matrix.Build.Random(1, 1); //initial state with noise
             P = Matrix.Build.Diagonal(n, n, 1); //initial state covariance
-            ng = ng ?? new NoiseGenerator(q, 2);
+                                                //ng = ng ?? new NoiseGenerator(q, 2);
 
-    
+
 
 
         }
@@ -109,14 +125,14 @@ namespace DemoApp
         {
 
             //if(!initialiseFlag) Initialise();
-
+            _estimates = new List<Tuple<Matrix<double>, Matrix<double>>>();
             Estimates.Clear();
             Measurements.Clear();
             dt = new DateTime();
-            Estimates.Add(new Measurement( value : 0, time :dt, variance: 0 ));
+            Estimates.Add(new Measurement(value: 0, time: dt, variance: 0));
 
             k = 0;
-            while (k<N)
+            while (k < N)
             {
 
 
@@ -124,7 +140,7 @@ namespace DemoApp
 
                 AddEstimate();
 
-              
+
             }
 
         }
@@ -133,12 +149,12 @@ namespace DemoApp
 
         public void AddMeasurement()
         {
-            Vector<double> z = Vector<double>.Build.DenseOfArray(new double[] { ProcessBuilder.SineWave(k, r), 0 });
+            Vector<double> z = Vector<double>.Build.DenseOfArray(new double[] { ProcessFactory.SinePoint(k, r,0), 0 });
 
             filter.Update(ref x, ref P, z, h, R);                //ukf 
-   
 
-            Measurements.Add(new Measurement(value : z[0], time :dt+ TimeSpan.FromSeconds(k) ));
+
+            Measurements.Add(new Measurement(value: z[0], time: dt + TimeSpan.FromSeconds(k)));
         }
 
 
@@ -147,13 +163,13 @@ namespace DemoApp
         {
 
             var x_and_P = filter.Predict(x, P, f, Q, 1);
-             x = x_and_P.Item1;
-             P = x_and_P.Item2;
+            x = x_and_P.Item1;
+            P = x_and_P.Item2;
 
 
-            Estimates.Add(new Measurement(value : x_and_P.Item1[0], time : dt+TimeSpan.FromSeconds(k + 1), variance :x_and_P.Item2[0, 0] ));
+            Estimates.Add(new Measurement(value: x_and_P.Item1[0], time: dt + TimeSpan.FromSeconds(k + 1), variance: x_and_P.Item2[0, 0]));
 
-
+            //_estimates.Add(Tuple.Create(x, P));
             k++;
 
         }
@@ -161,134 +177,99 @@ namespace DemoApp
 
 
 
-
-        public void Smoooth()
+        public void Smooth()
         {
-            ObservableCollection<ObservableCollection<Measurement>> SmoothedEstimates = new ObservableCollection<ObservableCollection<Measurement>>();
-
-            for (int p = 0; p < 1; p++)
-            {
-
-                for (int l = k - 1; l > -1; l--)
-                {
-
-                    var x_and_P = filter.Predict(x, P, f, Q, 1);
-                    x = x_and_P.Item1;
-                    P = x_and_P.Item2;
-
-                    var z = Vector<double>.Build.DenseOfArray(new double[] { Measurements[l].Value, 0 });
-
-                    filter.Update(ref x, ref P, z, h, R);                //ukf 
-    
-
-                }
-
-                for (int o = 0; o < k; o++)
-                {
-                    var x_and_P = filter.Predict(x, P, f, Q, 1);
-                    x = x_and_P.Item1;
-                    P = x_and_P.Item2;
-
-                    var z = Vector<double>.Build.DenseOfArray(new double[] { Measurements[o].Value, 0 });
-
-                    filter.Update(ref x,ref P, z, h, R);                //ukf 
-        
-
-
-
-                }
-            }
-
-
-
-
-
-        }
-
-
-
-
-
-
-        public void Run2(double q, double r)
-        {
-
-            int h = 1;
+            ////R = Mbuilder.DenseDiagonal(n, n, 0);
 
             Estimates.Clear();
-            Measurements.Clear();
 
-           var x = Mbuilder.Random(n, 1);  //s + q * Matrix.Build.Random(1, 1); //initial state with noise
-          var  P = Mbuilder.Diagonal(n, n, 1); //initial state covariance
+            //var x = Smoother.Smooth(_estimates, Q, f);
 
+            //int cnt = _estimates.Count();
+            //Estimates = new ObservableCollection<Measurement>(x
+            //    .Select((_, i) => new Measurement(
+            //     value: _.Item1[0],
+            //     time: dt + TimeSpan.FromSeconds(cnt - i),
+            //     variance: _.Item2[0, 0])));
 
-            var filter = new MathNet.Filtering.Kalman.DiscreteKalmanFilter(x, P);
-
-
-
-            G = Mbuilder.Diagonal(n, n, 1); //covariance of process
-            Q = Mbuilder.Diagonal(n, n, q * q); //covariance of process
-            H = Mbuilder.Diagonal(n, n, h); //covariance of process
-
-            if (n == 2)
-                F = Matrix.Build.DenseOfColumnArrays(new double[] { 1, 0 }, new double[] { 1, 1 });
-            else if (n == 1)
-                F = Mbuilder.DenseOfColumnArrays(new double[] { 1 });
-
-
-            R = Mbuilder.Diagonal(n, n, r * r); //covariance of measurement  
-
-
-
-            double lastmeas = 0;
-            double ErrorSumSquared = 0;
+            NotifyChanged(nameof(Estimates));
+        }
 
 
 
 
 
-            for (int k = 1; k < N; k++)
+        public async void RunRecursion()
+        {
+            Estimates.Clear();
+            for (int p = 0; p < 3; p++)
             {
 
-                List<double> ddf = new List<double>();
-
-                var timespan = MathNet.Numerics.Distributions.Normal.Sample(rand, k, 1.0);
-                var az = ProcessBuilder.SineWave(timespan, SignalNoise);
-                ddf.Add(az);
-
-                if (n == 2)
+                for (int l = k - 1; l > 1; l--)
                 {
-                    ddf.Add(az - lastmeas);
+
+                    var x_and_P = filter.Predict(x, P, f, Q, 1);
+                    x = x_and_P.Item1;
+                    P = x_and_P.Item2;
+
+                    var z = Vector<double>.Build.DenseOfArray(new double[] { Measurements[l - 1].Value, 0 });
+
+                    filter.Update(ref x, ref P, z, h, R);                //ukf 
+
+                    Estimates.Add(new Measurement(value: x[0], time: dt + TimeSpan.FromSeconds(l), variance: P[0, 0]));
+
+                    for (int o = l; o < k; o++)
+                    {
+                        x_and_P = filter.Predict(x, P, f, Q, 1);
+                        x = x_and_P.Item1;
+                        P = x_and_P.Item2;
+
+
+                        z = Vector<double>.Build.DenseOfArray(new double[] { Measurements[o].Value, 0 });
+
+                        filter.Update(ref x, ref P, z, h, R);                //ukf 
+                    }
+                    await Task.Run(() =>
+
+                    System.Threading.Thread.Sleep(500));
 
                 }
-
-                Matrix<double> z = Mbuilder.DenseOfColumnArrays(ddf.ToArray());
-                //measurments
-                lastmeas = az;
-
-
-                filter.Predict(F, G, Q);
-
-                Estimates.Add(new Measurement(value : filter.State[0, 0], time : dt+TimeSpan.FromSeconds(k), variance : filter.Cov[0, 0] ));
-
-                Measurements.Add(new Measurement (value : z[0, 0], time :dt+ TimeSpan.FromSeconds(k) ));
-
-                ErrorSumSquared += Math.Pow(filter.State[0, 0] - z[0, 0], 2);
-
-                filter.Update(z, H, R);             //ukf 
+                k = N;
 
 
 
+                await Task.Run(() =>
+
+       System.Threading.Thread.Sleep(5000));
+
+                Estimates.Clear();
+
+                await Task.Run(() =>
+
+       System.Threading.Thread.Sleep(2000));
             }
 
+            Estimates.Clear();
 
 
-
-            MeanSquaredError = ErrorSumSquared / N;
-
-            NotifyChanged(nameof(MeanSquaredError));
 
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -328,10 +309,13 @@ namespace DemoApp
         }
 
 
+
+
+
     }
 
-  
-    }
+
+}
 
 
 
@@ -339,7 +323,7 @@ namespace DemoApp
 
 
 
-   
+
 
 
 

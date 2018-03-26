@@ -1,5 +1,5 @@
 ﻿using AForge.Genetic;
-using KalmanFilter.Common;
+using Filter.Utility;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
@@ -112,7 +112,7 @@ namespace AForgeEx
                 List<double> ddf = new List<double>();
 
                 var timespan = MathNet.Numerics.Distributions.Normal.Sample(rand, k, 1.0);
-                var az = ProcessBuilder.SineWave(timespan, SignalNoise);
+                var az = ProcessFactory.SinePoint(timespan, SignalNoise,0);
                 ddf.Add(az);
 
                 if (Dimensions == 2)
