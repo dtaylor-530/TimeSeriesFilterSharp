@@ -101,7 +101,7 @@ namespace ParticleFilter
 
 
 
-    public static class ParticleFilterHelper
+    public static class ParticleHelper
     {
 
         public static double[] Distances(Point dynamicpoint, Point[] staticpoints, double sensorError)

@@ -17,7 +17,9 @@ namespace ParticleFilter
         public List<Particle> Particles { get; set; }
         public int StdDev = 1;
 
-        public double VelocityNoise { get; set; } = 0.000000000001;
+
+        protected readonly double velocityfactor=0.000000000001;
+        public  double VelocityNoise { get; set; } = 6;
 
         public double OrientationNoise { get; set; }
         public IReSampler ReSampler { get; set; } = new DefaultReSampler();
@@ -101,7 +103,7 @@ namespace ParticleFilter
         {
             NextEpoch(effectiveCountMinRatio);
 
-            Particles.ForEach(p => p.DiffuseUniform1D(StdDev));
+            Particles = Particles.Select(p => p.DiffuseUniform1D(StdDev)).ToList                ();
 
         }
 
@@ -109,16 +111,23 @@ namespace ParticleFilter
         {
             NextEpoch(effectiveCountMinRatio);
 
-            Particles.ForEach(p => p.DiffuseNormal1D(VelocityNoise,  time.Ticks));
+            Particles=Particles.Select(p => p.DiffuseNormal1D(VelocityNoise* velocityfactor,  time.Ticks)).ToList();
 
         }
 
         public override void Update(System.Windows.Point measure)
         {
+            var x = new List<Particle>();
+
             foreach (var p in Particles)
             {
                 p.Weight = 1 / (Math.Abs(p.Y - measure.Y));
+                
+                x.Add(p);
+
             }
+
+            Particles = x;
         }
 
 

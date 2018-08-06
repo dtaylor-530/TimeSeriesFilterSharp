@@ -16,9 +16,12 @@ using System.Windows.Shapes;
 using OxyPlot;
 using OxyPlot.Wpf;
 using System.Timers;
-using Filter.Utility;
 
-namespace DemoApp
+using Filter.ViewModel;
+using Filter.Service;
+using UtilityWpf.ViewModel;
+
+namespace TimeSeriesFilter.Terminal
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -26,12 +29,15 @@ namespace DemoApp
     public partial class MainWindow : Window
     {
 
-        MainWindowViewModel viewmodel;
+        MainViewModel viewmodel;
 
         public MainWindow()
         {
             InitializeComponent();
-            viewmodel = new MainWindowViewModel();
+     
+            var d = new DispatcherService(Application.Current.Dispatcher);
+        
+            viewmodel = new MainViewModel( d);
             this.DataContext = viewmodel;
         }
 

@@ -13,7 +13,9 @@ using GeneticSharp.Domain.Populations;
 using GeneticSharp.Domain.Selections;
 using GeneticSharp.Domain.Terminations;
 using MathNet.Numerics.LinearAlgebra;
-using Filter.Utility;
+using Filter.Common;
+using KalmanFilter.Wrap;
+using Filter.Service;
 
 namespace GeneticAlgorithmWrapper
 {
@@ -49,7 +51,7 @@ namespace GeneticAlgorithmWrapper
         }
 
          int d = 1;
-        private IEnumerable<Tuple<DateTime,Matrix<double>>> measurements;
+        private IEnumerable<KeyValuePair<DateTime,double>> measurements;
 
 
         public OuterWrap(params Tuple<double, double>[] minmax)
@@ -61,8 +63,9 @@ namespace GeneticAlgorithmWrapper
             ga.GenerationRan += NewGeneration;
 
 
-            measurements = Filter.Utility.ProcessFactory.SineWave(3, 100, true).ToMatrices();
-
+            measurements = SignalGenerator.GetPeriodicDefault();
+        
+           
             NotifyOfImprovement += GeneticAlgorithm_NotifyOfImprovement;
 
 
@@ -84,7 +87,7 @@ namespace GeneticAlgorithmWrapper
 
             var estimates=  dkf.BatchRun( measurements);
 
-            var ErrorSumSquared = measurements.Zip(estimates, (a, b) => Math.Pow(a.Item2[0,0] - b.Value.Item2[0, 0], 2)).Sum();
+            var ErrorSumSquared = measurements.Zip(estimates, (a, b) => Math.Pow(a.Value- b.Value[0].Item1, 2)).Sum();
 
             var InverseMeanSquaredError = 1000 / ErrorSumSquared;
 

@@ -1,7 +1,13 @@
 E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\bin\Debug\Filter.Utility.dll
 E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\bin\Debug\Filter.Utility.pdb
 E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\bin\Debug\MathNet.Numerics.dll
+E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\bin\Debug\System.Reactive.dll
+E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\bin\Debug\System.Reactive.Interfaces.dll
+E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\bin\Debug\System.Reactive.Linq.dll
 E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\bin\Debug\MathNet.Numerics.xml
+E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\bin\Debug\System.Reactive.xml
+E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\bin\Debug\System.Reactive.Interfaces.xml
+E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\bin\Debug\System.Reactive.Linq.xml
 E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\obj\Debug\Filter.Utility.csprojResolveAssemblyReference.cache
 E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\obj\Debug\Filter.Utility.csproj.CoreCompileInputs.cache
 E:\rolyat4\Documents\Visual Studio 2015\Projects\Kalman Filters And Bayes\UKFSharp-master\KalmanFilter.Common\obj\Debug\Filter.Utility.dll

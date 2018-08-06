@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="TimeSeriesFilter.View.ParticleFilterUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+xmlns:local="clr-namespace:TimeSeriesFilter.View"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:pt="http://propertytools.org/wpf" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+
+    <DockPanel>
+        <UniformGrid DockPanel.Dock="Top" Height="100"  Rows="1">
+            <WrapPanel >
+
+                <Button Height="30" Width="100" Click="Button_BatchRun" Content="Run" Margin="2"/>
+
+            </WrapPanel >
+
+
+
+
+
+        </UniformGrid>
+
+        <Grid DockPanel.Dock="Top" Height="130">
+            <pt:PropertyGrid SelectedObject="{Binding }"></pt:PropertyGrid>
+
+        </Grid>
+
+
+        <UniformGrid Rows="1">
+            <local:PredictionUserControl  DockPanel.Dock="Bottom" DataContext="{Binding}"></local:PredictionUserControl>
+            <Grid>
+                <oxy:Plot  x:Name="Plot1" Grid.Column="0"  >
+                    <oxy:Plot.Series>
+                        <oxy:ScatterSeries Name="mseries" ItemsSource="{Binding Measurements}"   Title="Measurement"   DataFieldX="Key" DataFieldY="Value" MarkerSize="4" MarkerFill="Red" MarkerType="Square"/>
+                        <oxy:ScatterSeries Name="leseries" ItemsSource="{Binding EstimatesAll}"  Title="Estimate"    DataFieldX="Time" DataFieldY="Value"  />
+                    </oxy:Plot.Series>
+                    <oxy:Plot.Axes>
+                        <oxy:DateTimeAxis Position="Bottom"/>
+                        <oxy:LinearAxis Position="Left"/>
+                    </oxy:Plot.Axes>
+                </oxy:Plot>
+            </Grid>
+        </UniformGrid>
+    </DockPanel>
+
+
+</UserControl>

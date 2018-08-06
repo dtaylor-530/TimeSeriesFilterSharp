@@ -39,7 +39,8 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdaptiveKalmanFilter.cs" />
+    <Compile Include="Adaptive.cs" />
+    <Compile Include="class1.cs" />
     <Compile Include="Filter\DiscreteKalmanFilter.cs" />
     <Compile Include="IAdaptive.cs" />
     <Compile Include="IFunction.cs" />

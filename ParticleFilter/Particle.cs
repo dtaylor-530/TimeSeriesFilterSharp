@@ -104,19 +104,19 @@ namespace ParticleFilter
         }
 
 
-        public static void DiffuseUniform(this Particle p, double std)
+        public static Particle DiffuseUniform(this Particle p, double std)
         {
 
             p.X = (double)MathNet.Numerics.Distributions.ContinuousUniform.Sample(p.X - std, p.X + std);
             p.Y = (double)MathNet.Numerics.Distributions.ContinuousUniform.Sample(p.Y - std, p.Y + std);
-
+            return p;
         }
 
-        public static void DiffuseUniform1D(this Particle p, double std)
+        public static Particle DiffuseUniform1D(this Particle p, double std)
         {
 
             p.Y = (double)MathNet.Numerics.Distributions.ContinuousUniform.Sample(p.Y - std, p.Y + std);
-
+            return p;
         }
         //public static void DiffuseNormal(this Particle p, double std)
         //{
@@ -127,7 +127,7 @@ namespace ParticleFilter
 
         //}
 
-        public static void DiffuseNormal2D(this Particle p, double std, double ostd, long ticks = 1)
+        public static Particle DiffuseNormal2D(this Particle p, double std, double ostd, long ticks = 1)
         {
 
 
@@ -137,15 +137,19 @@ namespace ParticleFilter
 
             p.Orientation = Normal.Sample(p.Orientation, ostd) % 2 * Math.PI;
             p.Velocity = (double)Normal.Sample(p.Velocity, std);
+
+            return p;
         }
 
 
-        public static void DiffuseNormal1D(this Particle p, double std, long ticks = 1)
+        public static Particle DiffuseNormal1D(this Particle p, double std, long ticks = 1)
         {
 
             p.Y += p.Velocity * ticks;
 
             p.Velocity = (double)Normal.Sample(p.Velocity, std);
+
+            return p;
         }
 
 

@@ -27,13 +27,13 @@ namespace KalmanFilter
 
 
 
-    public static class StateFunctions
+    public class StateFunctions
     {
+        //private static readonly VectorBuilder<double> vBuilder = Vector<double>.Build;
+        private static readonly MatrixBuilder<double> mBuilder = Matrix<double>.Build;
 
-
-        public static Matrix<double> BuildTransition(int size, MatrixBuilder<double> mBuilder = null)
+        public static Matrix<double> BuildTransition(int size)
         {
-            mBuilder = mBuilder ?? Matrix<double>.Build;
             switch (size)
             {
                 case (3):
@@ -49,9 +49,9 @@ namespace KalmanFilter
 
 
 
-        public static Matrix<double> BuildMeasurement(int size, int measurements, MatrixBuilder<double> mBuilder = null)
+        public static Matrix<double> BuildMeasurement(int size, int measurements)
         {
-            mBuilder = mBuilder ?? Matrix<double>.Build;
+            //mBuilder = mBuilder ?? Matrix<double>.Build;
 
             List<double[]> lst = new List<double[]>();
             for (int j = 0; j < measurements; j++)
@@ -69,21 +69,26 @@ namespace KalmanFilter
 
 
 
-        public static void UpdateTransition(this Matrix<double> F, TimeSpan ts)
-        {
 
-            if (F.RowCount > 1)
-                F[0, 1] = ts.TotalDays;
-
-            if (F.RowCount > 2)
-            {
-                F[0, 2] = 0.5 * ts.TotalDays * ts.TotalDays;
-                F[1, 2] = ts.TotalDays;
-            }
-
-        }
 
     }
 
 
+    public static class StateFunctionsEx
+    {
+
+        //public static void UpdateTransition(this Matrix<double> F, TimeSpan ts)
+        //{
+
+        //    if (F.RowCount > 1)
+        //        F[0, 1] = ts.TotalSeconds;
+
+        //    if (F.RowCount > 2)
+        //    {
+        //        F[0, 2] = 0.5 * ts.TotalSeconds* ts.TotalSeconds;
+        //        F[1, 2] = ts.TotalSeconds;
+        //    }
+
+        //}
+    }
 }

@@ -20,11 +20,11 @@ namespace KalmanFilter
         }
 
         public static Dictionary<DateTime, Tuple<Matrix<double>, Matrix<double>>>
-            Smooth(IList<KeyValuePair<DateTime, Tuple<Matrix<double>, Matrix<double>>>> estimates,Matrix<double> F,Matrix<double> Q)
+            Smooth(IEnumerable<KeyValuePair<DateTime, Tuple<Matrix<double>, Matrix<double>>>> estimates,Matrix<double> F,Matrix<double> Q)
         {
 
 
-            var smoothedEstimates = new Dictionary<DateTime, Tuple<Matrix<double>, Matrix<double>>>();
+            //var smoothedEstimates = new Dictionary<DateTime, Tuple<Matrix<double>, Matrix<double>>>();
 
 
             DateTime dt = estimates.Last().Key;
@@ -38,6 +38,8 @@ namespace KalmanFilter
             return SmoothEstimates(x, P, keys, values, F, Q);
 
         }
+
+
 
 
 
@@ -86,7 +88,7 @@ namespace KalmanFilter
         {
 
 
-            F.UpdateTransition(ts);
+            //F.UpdateTransition(ts);
 
 
             // predicted covariance
