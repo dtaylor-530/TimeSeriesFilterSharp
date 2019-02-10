@@ -1,7 +1,7 @@
 ﻿
 
-using Filter.Common;
-using Filter.ViewModel;
+using FilterSharp.Common;
+using FilterSharp.ViewModel;
 using GaussianProcess;
 using GaussianProcess.Wrap;
 using MathNet.Numerics.Distributions;
@@ -25,7 +25,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 
 
-namespace TimeSeriesFilter.View
+namespace TimeSeriesFilterSharp.View
 {
     /// <summary>
     /// Interaction logic for GaussianProcessUserControl.xaml

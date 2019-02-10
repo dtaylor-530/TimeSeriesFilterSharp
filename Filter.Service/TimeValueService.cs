@@ -6,8 +6,7 @@ using System.Reactive.Concurrency;
 using System.Windows.Threading;
 using GaussianProcess.Wrap;
 using static MathNet.Numerics.Generate;
-using Filter.Model;
-using UtilityMath;
+using FilterSharp.Model;
 using System.Reactive.Subjects;
 
 namespace Filter.Service

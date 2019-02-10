@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 using System.Windows;
 using MathNet.Numerics.Distributions;
 using System.Reactive.Linq;
-using UtilityReactive;
 using UtilityHelper;
+using FilterSharp.Common;
 
 
 // Based On
-//https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python/blob/master/12-Particle-Filters.ipynb
+//https://github.com/rlabbe/Kalman-and-Bayesian-FilterSharps-in-Python/blob/master/12-Particle-FilterSharps.ipynb
 
-namespace ParticleFilter.Wrap
+namespace ParticleFilterSharp.Wrap
 {
-    public class ParticleFilterWrapper : Filter.Model.IFilterWrapper
+    public class ParticleFilterSharpWrapper : FilterSharp.Model.IFilterWrapper
     {
 
         public int N { get; set; } = 1000;
@@ -31,10 +31,10 @@ namespace ParticleFilter.Wrap
         public IEnumerable<KeyValuePair<DateTime, Tuple<double, double>[]>> BatchRun(IEnumerable<KeyValuePair<DateTime, double>> meas)
         {
 
-            ParticleFilter1D filter = new ParticleFilter1D();
+            ParticleFilterSharp1D FilterSharp = new ParticleFilterSharp1D();
 
 
-            filter.Particles = ParticleFactory.BuildSwarm(N, new int[] { min, max }).ToList();
+            FilterSharp.Particles = ParticleFactory.BuildSwarm(N, new int[] { min, max }).ToList();
 
 
             DateTime dt = meas.First().Key;
@@ -44,14 +44,14 @@ namespace ParticleFilter.Wrap
                 TimeSpan ticks = (_.Key - dt);
 
                 // move based on last measurement
-                filter.Predict(EffectiveCountMinRatio, ticks);
+                FilterSharp.Predict(EffectiveCountMinRatio, ticks);
 
                 var prd = new KeyValuePair<DateTime, Tuple<double, double>[]>(
-                    dt, filter.Particles.Select(__ => Tuple.Create(__.Y, __.Weight)).ToArray());
+                    dt, FilterSharp.Particles.Select(__ => Tuple.Create(__.Y, __.Weight)).ToArray());
 
 
                 // incorporate measurement
-                filter.Update(new Point(0, _.Value));
+                FilterSharp.Update(new Point(0, _.Value));
 
                 dt = _.Key;
 
@@ -67,25 +67,25 @@ namespace ParticleFilter.Wrap
         public IObservable<KeyValuePair<DateTime, Tuple<double, double>[]>> Run(IObservable<KeyValuePair<DateTime, double?>> meas)
         {
 
-            ParticleFilter1D filter = new ParticleFilter1D();
+            ParticleFilterSharp1D FilterSharp = new ParticleFilterSharp1D();
 
 
-            filter.Particles = ParticleFactory.BuildSwarm(N, new int[] { min, max }).ToList();
+            FilterSharp.Particles = ParticleFactory.BuildSwarm(N, new int[] { min, max }).ToList();
 
 
             return meas.IncrementalTimeOffsets().Select(_ =>
             {
 
                 // move based on last measurement
-                filter.Predict(EffectiveCountMinRatio, _.Key.Item2);
+                FilterSharp.Predict(EffectiveCountMinRatio, _.Key.Item2);
 
                 var prd = new KeyValuePair<DateTime, Tuple<double, double>[]>(
-                    _.Key.Item1, filter.Particles.Select(__ => Tuple.Create(__.Y, __.Weight)).ToArray());
+                    _.Key.Item1, FilterSharp.Particles.Select(__ => Tuple.Create(__.Y, __.Weight)).ToArray());
 
 
                 // incorporate measurement
                 if (_.Value != null)
-                    filter.Update(new Point(0, (double)_.Value));
+                    FilterSharp.Update(new Point(0, (double)_.Value));
 
 
                 return prd;
@@ -101,10 +101,10 @@ namespace ParticleFilter.Wrap
         public IEnumerable<KeyValuePair<DateTime, Tuple<double, double>[]>> BatchRun1D(IEnumerable<KeyValuePair<DateTime, Point>> meas)
         {
 
-            ParticleFilter1D filter = new ParticleFilter1D();
+            ParticleFilterSharp1D FilterSharp = new ParticleFilterSharp1D();
 
 
-            filter.Particles = ParticleFactory.BuildSwarm(N, new int[] { min, max }).ToList();
+            FilterSharp.Particles = ParticleFactory.BuildSwarm(N, new int[] { min, max }).ToList();
 
 
             DateTime dt = meas.First().Key;
@@ -115,15 +115,15 @@ namespace ParticleFilter.Wrap
                 TimeSpan ticks = (m.Key - dt);
 
                 // move based on last measurement
-                filter.Predict(EffectiveCountMinRatio, ticks);
+                FilterSharp.Predict(EffectiveCountMinRatio, ticks);
 
                 var prd = new KeyValuePair<DateTime, Tuple<double, double>[]>(
-                    m.Key, filter.Particles.Select(__ => Tuple.Create(__.Y, __.Weight)).ToArray());
+                    m.Key, FilterSharp.Particles.Select(__ => Tuple.Create(__.Y, __.Weight)).ToArray());
 
 
                 // incorporate measurement
                 if (m.Value != default(Point))
-                    filter.Update(m.Value);
+                    FilterSharp.Update(m.Value);
 
                 dt = m.Key;
 
@@ -142,7 +142,7 @@ namespace ParticleFilter.Wrap
         public IEnumerable<KeyValuePair<DateTime, Tuple<Normal, Normal>>> BatchRun(List<Tuple<DateTime, Point>> meas, Point initialPoint)
         {
 
-            ParticleFilter2D filter = new ParticleFilter2D();
+            ParticleFilterSharp2D FilterSharp = new ParticleFilterSharp2D();
 
             IContinuousDistribution xDistribution = null;
             IContinuousDistribution yDistribution = null;
@@ -157,7 +157,7 @@ namespace ParticleFilter.Wrap
                 oDistribution = new ContinuousUniform(0, 2 * Math.PI);
                 vDistribution = new ContinuousUniform(0.000001, 0.000001);
             }
-            filter.Particles = ParticleFactory.BuildSwarm(N, xDistribution, yDistribution, vDistribution, oDistribution).ToList();
+            FilterSharp.Particles = ParticleFactory.BuildSwarm(N, xDistribution, yDistribution, vDistribution, oDistribution).ToList();
 
 
 
@@ -171,14 +171,14 @@ namespace ParticleFilter.Wrap
 
                 // move based on last measurement
 
-                filter.Predict(EffectiveCountMinRatio);
-                var est = ParticleHelper.Estimate(filter.Particles);
+                FilterSharp.Predict(EffectiveCountMinRatio);
+                var est = ParticleHelper.Estimate(FilterSharp.Particles);
                 yield return new KeyValuePair<DateTime, Tuple<Normal, Normal>>(dt, est);
                 // predictions.Add(new KeyValuePair<DateTime, List<Point>>(dt, particles.Select(_=>(Point)(_)).ToList()));
 
 
                 // incorporate measurements
-                filter.Update(meas[i].Item2);
+                FilterSharp.Update(meas[i].Item2);
 
 
                 dt = meas[i].Item1;
@@ -200,7 +200,7 @@ namespace ParticleFilter.Wrap
 
 
 
-    public static class ParticleFilterHelper
+    public static class ParticleFilterSharpHelper
         {
 
         public static Tuple<double, double> ToWeightedEstimate(IEnumerable<Tuple<double, double>> prediction)

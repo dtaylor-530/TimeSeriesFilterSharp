@@ -8,7 +8,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using Filter.Model;
+using FilterSharp.Model;
 
 using UtilityWpf.ViewModel;
 using Filter.Common;
@@ -31,11 +31,11 @@ namespace Filter.Controller
         public IObservable<CollectionViewModel<Estimate>> PositionPredictionsVM { get; set; }
         public IObservable<CollectionViewModel<Estimate>> VelocityPredictionsVM { get; set; }
 
-        public PredictionsController(IObservable<IEnumerable< KeyValuePair<DateTime, Tuple<double, double>[]>>> subject, IScheduler s)
+        public PredictionsController(IObservable<IEnumerable< KeyValuePair<DateTime, Tuple<double, double>[]>>> subject, IScheduler s,Dispatcher dis)
         {
-            PositionPredictionsVM = subject.Select(_ => new CollectionViewModel<Estimate>(_.Select(a => new Estimate(a.Key, a.Value[0].Item1, a.Value[0].Item2))));
+            PositionPredictionsVM = subject.Select(_ => new CollectionViewModel<Estimate>(_.Select(a => new Estimate(a.Key, a.Value[0].Item1, a.Value[0].Item2)),dis));
 
-            VelocityPredictionsVM = subject.Select(_ => new CollectionViewModel<Estimate>(_.Select(a => new Estimate(a.Key, a.Value[1].Item1, a.Value[1].Item2))));
+            VelocityPredictionsVM = subject.Select(_ => new CollectionViewModel<Estimate>(_.Select(a => new Estimate(a.Key, a.Value[1].Item1, a.Value[1].Item2)),dis));
 
         }
 

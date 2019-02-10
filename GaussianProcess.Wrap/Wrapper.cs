@@ -11,7 +11,7 @@ using System.ComponentModel;
 
 using MathNet.Numerics.LinearAlgebra;
 
-using Filter.Model;
+using FilterSharp.Model;
 
 namespace GaussianProcess.Wrap
 {

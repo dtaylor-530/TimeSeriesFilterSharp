@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Filter.ViewModel
+namespace FilterSharp.ViewModel
 {
     public abstract class INPCBase : INotifyPropertyChanged
     {

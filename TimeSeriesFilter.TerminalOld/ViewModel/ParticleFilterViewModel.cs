@@ -1,9 +1,9 @@
-﻿using Filter.Common;
-using Filter.Model;
-using Filter.Service;
+﻿using FilterSharp.Common;
+using FilterSharp.Model;
+using ReactiveUI;
 
 using MathNet.Numerics.LinearAlgebra;
-using ParticleFilter;
+using ParticleFilterSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,40 +11,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using TimeSeries.Service;
 
-namespace Filter.ViewModel
+
+namespace FilterSharp.ViewModel
 {
-    public class ParticleFilterViewModel : PredictionViewModel
+    public class ParticleFilterSharpViewModel : PredictionViewModel
     {
 
 
         public ObservableCollection<Estimate> EstimatesAll { get; private set; }
 
      
-        private ParticleFilter.Wrap.ParticleFilterWrapper _filter;
+        private ParticleFilterSharp.Wrap.ParticleFilterSharpWrapper _FilterSharp;
 
-        public ParticleFilterViewModel(int particleCount, Tuple<int, int> x, Tuple<int, int> y)
+        public ParticleFilterSharpViewModel(int particleCount, Tuple<int, int> x, Tuple<int, int> y)
         {
-
 
         }
 
         public void BatchRun(IEnumerable<KeyValuePair<DateTime, Point>> meas , int particleCount = 100, Tuple<int, int> range = null)
         {
 
-            _filter = new ParticleFilter.Wrap.ParticleFilterWrapper();
+            _FilterSharp = new ParticleFilterSharp.Wrap.ParticleFilterSharpWrapper();
 
-            var u = _filter.BatchRun1D(meas);
+            var u = _FilterSharp.BatchRun1D(meas);
             EstimatesAll=new ObservableCollection<Estimate>(u.SelectMany(_ => _.Value.OrderBy(s=>1d/s.Item2).Take(10).Select(__=>new Estimate(_.Key, __.Item1, __.Item2))));
             Estimates = new ObservableCollection<Estimate>(u.Select(_ => new Estimate(_.Key, _.Value.WeightedAverage(a=>a.Item1,a=>a.Item2), _.Value[0].Item2)));
-             NotifyChanged(nameof(Estimates),nameof(EstimatesAll));
-            
+            this.RaisePropertyChanged(nameof(Estimates));
+            this.RaisePropertyChanged(nameof(EstimatesAll));
             Measurements = new ObservableCollection<KeyValuePair<DateTime, double>>(meas.Select(_=>new KeyValuePair<DateTime, double>(_.Key,_.Value.Y)));
 
-            NotifyChanged(nameof(Measurements), nameof(Estimates));
+            this.RaisePropertyChanged(nameof(Measurements));
+            this.RaisePropertyChanged(nameof(Estimates));
 
-           
+
         }
 
 

@@ -222,7 +222,7 @@ namespace KalmanFilter.Wrap
         }
 
         /// <summary>
-        /// Gets the position measurement matrix [2 x 4] used in Kalman filtering.
+        /// Gets the position measurement matrix [2 x 4] used in Kalman FilterSharping.
         /// </summary>
         /// <returns>Position measurement matrix.</returns>
         public static double[,] GetPositionMeasurementMatrix()

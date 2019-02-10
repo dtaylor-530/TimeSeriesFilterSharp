@@ -1,5 +1,5 @@
 ﻿
-using Filter.ViewModel;
+using FilterSharp.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +14,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Filter.Common;
+using FilterSharp.Common;
 
-namespace TimeSeriesFilter.View
+namespace TimeSeriesFilterSharp.View
 {
     /// <summary>
-    /// Interaction logic for KalmanFilterUserControl.xaml
+    /// Interaction logic for  KalmanFilterUserControl.xaml
     /// </summary>
-    public partial class KalmanFilterUserControl : UserControl
+    public partial class  KalmanFilterUserControl : UserControl
     {
-        public KalmanFilterUserControl()
+        public  KalmanFilterUserControl()
         {
             InitializeComponent();
         }
@@ -36,10 +36,10 @@ namespace TimeSeriesFilter.View
         public void Button_Discrete(object sender, RoutedEventArgs e)
         {
 
-            this.DataContext = new KalmanFilterViewModel();
+            this.DataContext = new  KalmanFilterViewModel();
 
 
-            (this.DataContext as KalmanFilterViewModel).Run(2,52);
+            (this.DataContext as  KalmanFilterViewModel).Run(2,52);
 
 
         }
@@ -49,26 +49,26 @@ namespace TimeSeriesFilter.View
         private void Button_DiscreteOptimised(object sender, RoutedEventArgs e)
         {
 
-            this.DataContext = new KalmanFilterViewModel();
-            (this.DataContext as KalmanFilterViewModel).RunOptimised();
+            this.DataContext = new  KalmanFilterViewModel();
+            (this.DataContext as  KalmanFilterViewModel).RunOptimised();
         }
 
 
 
         private void Button_DiscreteDelayed(object sender, RoutedEventArgs e)
         {
-            this.DataContext = new KalmanFilterViewModel();
-            (this.DataContext as KalmanFilterViewModel).RunDelayed(2,52);
+            this.DataContext = new  KalmanFilterViewModel();
+            (this.DataContext as  KalmanFilterViewModel).RunDelayed(2,52);
         }
 
 
 
         private void Button_DiscreteSmooth(object sender, RoutedEventArgs e)
         {
-            if (!(this.DataContext is KalmanFilterViewModel))
+            if (!(this.DataContext is  KalmanFilterViewModel))
                 return;
 
-            (this.DataContext as KalmanFilterViewModel).Smooth();
+            (this.DataContext as  KalmanFilterViewModel).Smooth();
         }
 
 

@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace ParticleFilter
+namespace ParticleFilterSharp
 {
 
 
-    public abstract class ParticleFilter
+    public abstract class ParticleFilterSharp
     {
 
 
@@ -27,7 +27,7 @@ namespace ParticleFilter
         //public IReSampler ReSampler { get; set; } = new SystematicReSampler();
 
 
-        public ParticleFilter()
+        public ParticleFilterSharp()
         {
             //switch (dimensions)
             //{
@@ -87,12 +87,12 @@ namespace ParticleFilter
 
 
 
-    public class ParticleFilter1D:ParticleFilter
+    public class ParticleFilterSharp1D:ParticleFilterSharp
     {
    
 
 
-        public ParticleFilter1D()
+        public ParticleFilterSharp1D()
         {
             OrientationNoise = 0;
 

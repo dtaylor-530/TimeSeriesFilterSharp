@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KalmanFilter.Common
+namespace  KalmanFilter.Common
 {
 
     public class WhiteNoise:ITimeFunction

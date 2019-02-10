@@ -1,15 +1,16 @@
-﻿using Filter.Model;
-using Filter.ViewModel;
+﻿using FilterSharp.Model;
+using FilterSharp.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ReactiveUI;
 
-namespace Filter.ViewModel
+namespace FilterSharp.ViewModel
 {
-    public  class PredictionViewModel : INPCBase
+    public  class PredictionViewModel : ReactiveObject
     {
 
 

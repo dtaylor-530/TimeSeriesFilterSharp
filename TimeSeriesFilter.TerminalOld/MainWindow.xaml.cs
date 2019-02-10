@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 using System.Timers;
 
 
-namespace TimeSeriesFilter.TerminalOld
+namespace TimeSeriesFilterSharp.Terminal
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

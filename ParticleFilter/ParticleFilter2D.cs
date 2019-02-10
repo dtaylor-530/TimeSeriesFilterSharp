@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-namespace ParticleFilter
+namespace ParticleFilterSharp
 {
-    public class ParticleFilter2D:ParticleFilter
+    public class ParticleFilterSharp2D:ParticleFilterSharp
     {
     
 
 
-        public ParticleFilter2D(int dimensions=1)
+        public ParticleFilterSharp2D(int dimensions=1)
         {
             OrientationNoise  = 0.3;
         }

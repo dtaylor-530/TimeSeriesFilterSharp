@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Filter.Common
+namespace FilterSharp.Common
 {
     public class OxyPlotModelFactory
     {

@@ -71,17 +71,13 @@
     <Compile Include="MultiGaussianProcessEx.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\MasterProject\Utility\UtilityReactive\UtilityReactive.csproj">
-      <Project>{b87c92e9-6a33-41fd-b4bd-28d94741a1cc}</Project>
-      <Name>UtilityReactive</Name>
+    <ProjectReference Include="..\Filter.Common\FilterSharp.Common.csproj">
+      <Project>{a74612ad-e860-4d71-b387-2e1c15e5cba3}</Project>
+      <Name>FilterSharp.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Filter.Common\Filter.Common.csproj">
-      <Project>{A74612AD-E860-4D71-B387-2E1C15E5CBA3}</Project>
-      <Name>Filter.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Filter.Model\Filter.Model.csproj">
-      <Project>{D8D910CB-F78F-4B5F-BDAE-FFDCF51ADA43}</Project>
-      <Name>Filter.Model</Name>
+    <ProjectReference Include="..\Filter.Model\FilterSharp.Model.csproj">
+      <Project>{d8d910cb-f78f-4b5f-bdae-ffdcf51ada43}</Project>
+      <Name>FilterSharp.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\GaussianProcess\GaussianProcess.csproj">
       <Project>{71a3e646-0e88-43d2-b209-85e632cf37e5}</Project>

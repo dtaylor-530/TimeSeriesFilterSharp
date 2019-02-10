@@ -3,20 +3,20 @@ using System;
 
 using System.Collections.ObjectModel;
 
-using Filter.Common;
-using Filter.ViewModel;
+using FilterSharp.Common;
+using FilterSharp.ViewModel;
 using System.Linq;
 
-namespace TimeSeriesFilter.Terminal
+namespace TimeSeriesFilterSharp.Terminal
 {
-    //public class AccordKalmanFilterViewModel
+    //public class Accord KalmanFilterViewModel
     //{
     //    int delay = 50;
     //    readonly double noise = 3;
 
     //    public ObservableCollection<MeasurementsEstimates> Mes { get; set; } = new ObservableCollection<MeasurementsEstimates>();
 
-    //    public AccordKalmanFilterViewModel()
+    //    public Accord KalmanFilterViewModel()
     //    {
     //        Mes.Add(new MeasurementsEstimates { Measurements = new ObservableCollection<Measurement>(), Estimates = new ObservableCollection<Measurement>() });
     //        Mes.Add(new MeasurementsEstimates { Estimates = new ObservableCollection<Measurement>() });
@@ -29,10 +29,10 @@ namespace TimeSeriesFilter.Terminal
     //    public void Run()
     //    {
 
-    //        var meas =Filter.Service.TimeValueServices.MakeMeasurementServiceDefault(100);
+    //        var meas =FilterSharp.Service.TimeValueServices.MakeMeasurementServiceDefault(100);
 
 
-    //        var kf = new KalmanFilter.Wrap.AccordKalmanFilterWrapper(noise);
+    //        var kf = new KalmanFilter.Wrap.Accord KalmanFilterWrapper(noise);
 
 
     //        var u = kf.Run(meas);

@@ -6,34 +6,32 @@ using System.Collections.ObjectModel;
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra;
 using System.Collections.Generic;
-using KalmanFilter;
+using  KalmanFilter;
 using KalmanFilter.Wrap;
-
-using Filter.Common;
 using System.Threading.Tasks;
 using MathNet.Filtering.Kalman;
 using System.Reactive.Linq;
-using Filter.Model;
+using FilterSharp.Model;
 using UtilityMath;
 
 namespace KalmanFilter.Wrap
 {
 
 
-    public class DiscreteOuterWrapper : IFilterWrapper,Filter.Model.ITwoVariableInitialiser
+    public class DiscreteOuterWrapper : IFilterWrapper,FilterSharp.Model.ITwoVariableInitialiser
     {
-        public DiscreteInnerWrapper Filter { get; set; }
+        public DiscreteInnerWrapper FilterSharp { get; set; }
 
 
         public DiscreteOuterWrapper(double a, double b)
         {
-            Filter = DiscreteWrapperFactory.BuildDefault(a, b);
+            FilterSharp = DiscreteWrapperFactory.BuildDefault(a, b);
 
         }
 
         public DiscreteOuterWrapper(double a, double b,double c)
         {
-            Filter = DiscreteWrapperFactory.BuildDefault(a, b,c);
+            FilterSharp = DiscreteWrapperFactory.BuildDefault(a, b,c);
 
         }
 
@@ -44,7 +42,7 @@ namespace KalmanFilter.Wrap
 
         public DiscreteOuterWrapper(DiscreteInnerWrapper di)
         {
-            Filter = di;
+            FilterSharp = di;
         }
 
 
@@ -56,14 +54,14 @@ namespace KalmanFilter.Wrap
             //{
 
             DateTime firstDate = default(DateTime);
-            //var dfilter = DiscreteFactory.Build(this.Size);
+            //var dFilterSharp = DiscreteFactory.Build(this.Size);
             return measurements
                         .Select(meas =>
                         {
-                            var xP = Filter.Predict(meas.Key - firstDate);
+                            var xP = FilterSharp.Predict(meas.Key - firstDate);
 
                             if (meas.Value != null)
-                                Filter.Update(meas.Key - firstDate, new double[] { (double)meas.Value });
+                                FilterSharp.Update(meas.Key - firstDate, new double[] { (double)meas.Value });
 
                             return new KeyValuePair<DateTime, Tuple<double, double>[]>(meas.Key,
                                     xP.Item1.Column(0).Zip(xP.Item2.Diagonal(), (a, b) => Tuple.Create(a, b)).ToArray());
@@ -90,13 +88,13 @@ namespace KalmanFilter.Wrap
                 TimeSpan ts = meas.Key - dt;
                 dt = meas.Key;
 
-                var xP = Filter.Predict(ts);
+                var xP = FilterSharp.Predict(ts);
 
                 // add initial measurement back in
                 yield return new KeyValuePair<DateTime, Tuple<double, double>[]>(meas.Key,
                            (xP.Item1.Column(0) + v).Zip(xP.Item2.Diagonal(), (a, b) => Tuple.Create(a, b)).ToArray());
 
-                Filter.Update(ts, new double[] { (double)meas.Value });
+                FilterSharp.Update(ts, new double[] { (double)meas.Value });
 
             }
 
@@ -137,7 +135,7 @@ namespace KalmanFilter.Wrap
         //Matrix<double> Mean { get { return x; } set { x = value; } }
         //Matrix<double> CoVariance { get { return P; } set { P = value;  } }
 
-        public DiscreteKalmanFilter KalmanFilter { get; }
+        public DiscreteKalmanFilter  KalmanFilter { get; }
 
         public Matrix<double> Q { get; }
 
@@ -163,7 +161,7 @@ namespace KalmanFilter.Wrap
 
         public DiscreteInnerWrapper(double[] measurementnoise, double[] processnoise)
         {
-            KalmanFilter = DiscreteFactory.Build(processnoise.Length);
+             KalmanFilter = DiscreteFactory.Build(processnoise.Length);
 
 
             R = MatrixBuilder.Instance.Builder.Diagonal(measurementnoise).Map(_ => Math.Pow(_, 2)); //covariance of measurement  
@@ -184,7 +182,7 @@ namespace KalmanFilter.Wrap
         public Tuple<Matrix<double>, Matrix<double>> Predict(TimeSpan ts)
         {
 
-            return KalmanFilter.PredictState(ts, F, G, Q);
+            return  KalmanFilter.PredictState(ts, F, G, Q);
 
         }
 
@@ -193,7 +191,7 @@ namespace KalmanFilter.Wrap
         {
             var mz = MatrixBuilder.Instance.Builder.DenseOfColumnArrays(z);
 
-            //var diff = mz - H * dfilter.State;
+            //var diff = mz - H * dFilterSharp.State;
 
             Update( ts, mz);
 
@@ -207,14 +205,14 @@ namespace KalmanFilter.Wrap
         {
 
 
-            //dfilter.UpdateQ(AdaptiveQ, ts, z, H, AdaptiveR.Value);
+            //dFilterSharp.UpdateQ(AdaptiveQ, ts, z, H, AdaptiveR.Value);
 
-            KalmanFilter.UpdateState(z, H, R);
+             KalmanFilter.UpdateState(z, H, R);
 
 
-            //dfilter.UpdateR(AdaptiveR, ts, z, H);
+            //dFilterSharp.UpdateR(AdaptiveR, ts, z, H);
 
-            //return dfilter;
+            //return dFilterSharp;
 
 
         }
@@ -225,7 +223,7 @@ namespace KalmanFilter.Wrap
         public Matrix<double> GetDifference( Matrix<double> z)
         {
 
-            return (z - H * KalmanFilter.State).PointwiseAbs();
+            return (z - H *  KalmanFilter.State).PointwiseAbs();
         }
 
 
@@ -234,7 +232,7 @@ namespace KalmanFilter.Wrap
 
         //public void Predict(TimeSpan ts, DateTime dt, ref IDictionary<DateTime, Tuple<double[], double[]>> estimates)
         //{
-        //    var xP = dfilter.PredictState(ts, F, G, AdaptiveQ.Value);
+        //    var xP = dFilterSharp.PredictState(ts, F, G, AdaptiveQ.Value);
 
         //    var kvp = new KeyValuePair<DateTime, Tuple<double[], double[]>>(dt, Tuple.Create(xP.Item1.Column(0).AsArray(), xP.Item2.Diagonal().ToArray()));
 
@@ -245,7 +243,7 @@ namespace KalmanFilter.Wrap
 
         //public void Predict(TimeSpan ts, DateTime dt, ref IDictionary<DateTime, Tuple<Matrix<double>, Matrix<double>>> estimates)
         //{
-        //    var xP = dfilter.PredictState(ts, F, G, AdaptiveQ.Value);
+        //    var xP = dFilterSharp.PredictState(ts, F, G, AdaptiveQ.Value);
 
 
 

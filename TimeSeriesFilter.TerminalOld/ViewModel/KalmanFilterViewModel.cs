@@ -1,5 +1,5 @@
 ﻿
-using Filter.Common;
+using FilterSharp.Common;
 
 using KalmanFilter.Wrap;
 using MathNet.Numerics.LinearAlgebra;
@@ -10,16 +10,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Filter.Model;
-using Filter.Service;
+using FilterSharp.Model;
+using ReactiveUI;
 using System.Reactive.Linq;
 
-namespace Filter.ViewModel
+namespace FilterSharp.ViewModel
 {
 
 
 
-    public class KalmanFilterViewModel : PredictionViewModel
+    public class  KalmanFilterViewModel : PredictionViewModel
     {
 
 
@@ -30,19 +30,19 @@ namespace Filter.ViewModel
             var meas = MathNet.Numerics.Generate.Sinusoidal(40, 1000, 100, 10)
                 .Select((_, i) => new KeyValuePair<DateTime, double>(new DateTime() + TimeSpan.FromSeconds(i), 20 + MathNet.Numerics.Distributions.Normal.Sample(_, 1)));
 
-            var x = Filter.Optimisation.BGWorker.GetOptimisedKFPredictions(meas, 100);
+            //var x = FilterSharp.Optimisation.BGWorker.GetOptimisedKFPredictions(meas, 100);
 
-            x.Subscribe(u =>
-            {
-                Estimates = new ObservableCollection<Estimate>(u.Select(_ => new Estimate(_.Key, _.Value[0].Item1, _.Value[0].Item2)));
-                VelocityEstimates = new ObservableCollection<Estimate>(u.Select(_ => new Estimate(_.Key, _.Value[1].Item1, _.Value[1].Item2)));
-                NotifyChanged(nameof(Estimates));
-                NotifyChanged(nameof(VelocityEstimates));
-            });
-            Measurements = new ObservableCollection<KeyValuePair<DateTime, double>>(meas);
+            //x.Subscribe(u =>
+            //{
+            //    Estimates = new ObservableCollection<Estimate>(u.Select(_ => new Estimate(_.Key, _.Value[0].Item1, _.Value[0].Item2)));
+            //    VelocityEstimates = new ObservableCollection<Estimate>(u.Select(_ => new Estimate(_.Key, _.Value[1].Item1, _.Value[1].Item2)));
+            //    NotifyChanged(nameof(Estimates));
+            //    NotifyChanged(nameof(VelocityEstimates));
+            //});
+            //Measurements = new ObservableCollection<KeyValuePair<DateTime, double>>(meas);
 
 
-            NotifyChanged(nameof(Measurements));
+            //NotifyChanged(nameof(Measurements));
 
         }
 
@@ -68,12 +68,12 @@ namespace Filter.ViewModel
             Estimates = new ObservableCollection<Estimate>(fcd.Select(_ => new Estimate(_.Key, _.Value[0].Item1, _.Value[0].Item2)));
             VelocityEstimates = new ObservableCollection<Estimate>(fcd.Select(_ => new Estimate(_.Key, _.Value[1].Item1, _.Value[1].Item2)));
 
-            NotifyChanged(nameof(Estimates));
-            NotifyChanged(nameof(VelocityEstimates));
+            this.RaisePropertyChanged (nameof(Estimates));
+            this.RaisePropertyChanged(nameof(VelocityEstimates));
             Measurements = new ObservableCollection<KeyValuePair<DateTime, double>>(meas);
 
 
-            NotifyChanged(nameof(Measurements));
+            this.RaisePropertyChanged(nameof(Measurements));
 
 
         }
@@ -99,13 +99,13 @@ namespace Filter.ViewModel
                 VelocityEstimates.Add(new Estimate(_.Key, _.Value[1].Item1, _.Value[1].Item2));
             });
 
-            NotifyChanged(nameof(Estimates));
-            NotifyChanged(nameof(VelocityEstimates));
+            this.RaisePropertyChanged(nameof(Estimates));
+            this.RaisePropertyChanged(nameof(VelocityEstimates));
 
             Measurements = new ObservableCollection<KeyValuePair<DateTime, double>>(meas);
 
 
-            NotifyChanged(nameof(Measurements));
+            this.RaisePropertyChanged (nameof(Measurements));
 
 
         }
@@ -128,7 +128,7 @@ namespace Filter.ViewModel
             //for (int i = 0; i < k; i++)
             //{
 
-            //    var us = KalmanFilter.Smoother.Smooth(u, KalmanFilter.StateFunctions.BuildTransition(k), Q);
+            //    var us =  KalmanFilter.Smoother.Smooth(u,  KalmanFilter.StateFunctions.BuildTransition(k), Q);
 
 
             //    Mes[i].SmoothedEstimates = new ObservableCollection<Estimate>(us.Select(_ =>

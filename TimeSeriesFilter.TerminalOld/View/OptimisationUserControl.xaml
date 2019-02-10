@@ -11,10 +11,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="500"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                 xmlns:viewmodel="clr-namespace:Filter.ViewModel">
+                 xmlns:viewmodel="clr-namespace:FilterSharp.ViewModel">
 
     <UserControl.Resources>
-        <x:Array Type="{x:Type viewmodel:KernelOutput}" x:Key="sout" >
+        <!--<x:Array Type="{x:Type viewmodel:KernelOutput}" x:Key="sout" >
             <viewmodel:KernelOutput Name="Exponential" Iteration="0" Score="0.2"/>
             <viewmodel:KernelOutput Name="Random" Iteration="2" Score="2.2"/>
             <viewmodel:KernelOutput Name="Mantern" Iteration="3" Score="1.4" >
@@ -25,22 +25,19 @@
                     </x:Array>
                 </viewmodel:KernelOutput.Parameters>
             </viewmodel:KernelOutput>
-        </x:Array>
+        </x:Array>-->
     </UserControl.Resources>
 
 
-     
-            <TabControl>
 
-
-
-            <TabItem Header="All Kernels">
+    <TabControl>
+        <TabItem Header="All Kernels">
 
             <DockPanel>
                 <UniformGrid DockPanel.Dock="Top" Height="30"  Rows="1">
                     <Viewbox>
                         <UniformGrid Rows="1">
-                            <Button Height="30" Width="100" Click="ButtonRun_Click" Content="Run" Margin="2"/>
+                            <!--<Button Height="30" Width="100" Click="ButtonRun_Click" Content="Run" Margin="2"/>-->
                         </UniformGrid>
                     </Viewbox>
                 </UniformGrid>
@@ -69,7 +66,7 @@
 
 
 
-                            <GroupBox Grid.Row="1"  DataContext="{Binding Outputs, FallbackValue={StaticResource sout}}">
+                            <GroupBox Grid.Row="1"  DataContext="{Binding Outputs}">
                                 <!--DataContext="{DynamicResource Outputs}"-->
                                 <ItemsControl   ItemsSource="{Binding  }" >
                                     <ItemsControl.ItemTemplate>
@@ -138,15 +135,15 @@
                 <UniformGrid DockPanel.Dock="Top" Height="30"  Rows="1">
                     <Viewbox>
                         <ToolBar >
-                            <Button Height="30" Width="100" Click="ButtonRunTest_Click" Content="Run" Margin="2"/>
-                            <Button Height="30" Width="100" Click="ButtonRunKalmanFilterTest_Click" Content="Run" Margin="2"/>
+                            <!--<Button Height="30" Width="100" Click="ButtonRunTest_Click" Content="Run" Margin="2"/>
+                            <Button Height="30" Width="100" Click="ButtonRunKalmanFilterTest_Click" Content="Run" Margin="2"/>-->
                             </ToolBar >
                     </Viewbox>
                 </UniformGrid>
                 <UniformGrid Rows="1">
 
-                    <local:VelocityUserControl  DataContext="{Binding}"></local:VelocityUserControl>
-                    <local:PredictionUserControl  DataContext="{Binding}"></local:PredictionUserControl>
+                    <!--<local:VelocityUserControl  DataContext="{Binding}"></local:VelocityUserControl>
+                    <local:PredictionUserControl  DataContext="{Binding}"></local:PredictionUserControl>-->
              
                     </UniformGrid>
                 </DockPanel>

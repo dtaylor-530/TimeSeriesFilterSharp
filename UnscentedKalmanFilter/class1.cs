@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KalmanFilter
+namespace  KalmanFilter
 {
     //public class AEKF
     //{
     //    // <summary>
     //    // Adaptive Adjustment of Noise Covariance in Kalman 
-    //    // Filter for Dynamic State Estimation
+    //    // FilterSharp for Dynamic State Estimation
     //    // https://arxiv.org/ftp/arxiv/papers/1702/1702.00884.pdf
     //    // </summary>
 

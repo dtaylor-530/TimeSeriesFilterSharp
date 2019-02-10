@@ -8,7 +8,7 @@ namespace KalmanFilter.Wrap
 {
 
 
-    public class KalmanFilterWrapperFactory
+    public class  KalmanFilterWrapperFactory
     {
 
 

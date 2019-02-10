@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Filter.Common;
 using MathNet.Filtering.Kalman;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
@@ -54,7 +53,7 @@ namespace KalmanFilter.Wrap
         //{
         //    DateTime dt = measurements.First().Item1;
 
-        //    var dfilter = DiscreteFactory.Build(wrap.Size);
+        //    var dFilterSharp = DiscreteFactory.Build(wrap.Size);
         //    //IList<KeyValuePair<DateTime, Tuple<Matrix<double>, Matrix<double>>>> estimates = new List<KeyValuePair<DateTime, Tuple<Matrix<double>, Matrix<double>>>>();
         //    foreach (var meas in measurements)
         //    {
@@ -62,11 +61,11 @@ namespace KalmanFilter.Wrap
         //        TimeSpan ts = meas.Item1 - dt;
         //        dt = meas.Item1;
 
-        //        var xP = wrap.Predict(dfilter, ts);
+        //        var xP = wrap.Predict(dFilterSharp, ts);
 
         //        yield return new KeyValuePair<DateTime, Tuple<Matrix<double>, Matrix<double>>>(dt, Tuple.Create(xP.Item1, xP.Item2));
 
-        //        dfilter = wrap.Update(dfilter, ts, meas.Item2);
+        //        dFilterSharp = wrap.Update(dFilterSharp, ts, meas.Item2);
 
         //    }
 
@@ -80,22 +79,22 @@ namespace KalmanFilter.Wrap
         //{
 
         //    DateTime dt = meas.First().Item1;
-        //    var dfilter = DiscreteFactory.Build(wrap.Size);
+        //    var dFilterSharp = DiscreteFactory.Build(wrap.Size);
         //    for (int k = 0; k < meas.Count(); k++)
         //    {
 
         //        TimeSpan ts = meas[k].Item1 - dt;
         //        dt = meas[k].Item1;
 
-        //        var xP = wrap.Predict(dfilter, ts);
+        //        var xP = wrap.Predict(dFilterSharp, ts);
         //        yield return new KeyValuePair<DateTime, Tuple<Matrix<double>, Matrix<double>>>(dt, Tuple.Create(xP.Item1, xP.Item2));
 
 
         //        for (int i = k; i > -1; i--)
-        //            wrap.Run(ref dfilter, dt - meas[i].Item1, meas[i].Item2);
+        //            wrap.Run(ref dFilterSharp, dt - meas[i].Item1, meas[i].Item2);
 
         //        for (int j = 0; j < k; j++)
-        //            wrap.Run(ref dfilter, meas[j].Item1 - dt, meas[j].Item2);
+        //            wrap.Run(ref dFilterSharp, meas[j].Item1 - dt, meas[j].Item2);
 
         //    }
 
@@ -109,15 +108,15 @@ namespace KalmanFilter.Wrap
         //{
 
         //    DateTime dt = measurements.First().Item1;
-        //    var dfilter = DiscreteFactory.Build(wrap.Size);
+        //    var dFilterSharp = DiscreteFactory.Build(wrap.Size);
         //    foreach (var meas in measurements)
         //    {
         //        TimeSpan ts = meas.Item1 - dt;
         //        dt = meas.Item1;
 
-        //        var xP = wrap.Predict(dfilter, ts);
+        //        var xP = wrap.Predict(dFilterSharp, ts);
         //        yield return new KeyValuePair<DateTime, Tuple<double[], double[]>>(dt, Tuple.Create(xP.Item1.Column(0).AsArray(), xP.Item2.Diagonal().ToArray()));
-        //        dfilter = wrap.Update(dfilter, ts, meas.Item2);
+        //        dFilterSharp = wrap.Update(dFilterSharp, ts, meas.Item2);
 
         //    }
 
@@ -126,23 +125,23 @@ namespace KalmanFilter.Wrap
 
 
 
-        //public static Tuple<Matrix<double>, Matrix<double>> Run(this DiscreteWrapper wrap, ref DiscreteKalmanFilter dfilter, TimeSpan ts, double[] z)
+        //public static Tuple<Matrix<double>, Matrix<double>> Run(this DiscreteWrapper wrap, ref DiscreteKalmanFilter dFilterSharp, TimeSpan ts, double[] z)
         //{
-        //    var xP = wrap.Predict(dfilter, ts);
+        //    var xP = wrap.Predict(dFilterSharp, ts);
 
-        //    dfilter = wrap.Update(dfilter, ts, z);
+        //    dFilterSharp = wrap.Update(dFilterSharp, ts, z);
 
         //    return xP;
         //}
 
 
 
-        //public static Tuple<Matrix<double>, Matrix<double>> Run(this DiscreteWrapper wrap, ref DiscreteKalmanFilter dfilter, TimeSpan ts, Matrix<double> z)
+        //public static Tuple<Matrix<double>, Matrix<double>> Run(this DiscreteWrapper wrap, ref DiscreteKalmanFilter dFilterSharp, TimeSpan ts, Matrix<double> z)
         //{
 
-        //    var xP = wrap.Predict(dfilter, ts);
+        //    var xP = wrap.Predict(dFilterSharp, ts);
 
-        //    dfilter = wrap.Update(dfilter, ts, z);
+        //    dFilterSharp = wrap.Update(dFilterSharp, ts, z);
 
         //    return xP;
         //}
@@ -176,7 +175,7 @@ namespace KalmanFilter.Wrap
         //                TimeSpan ts = meas[k].Item1 - dt;
         //                dt = meas[k].Item1;
         //                F.UpdateTransition(ts);
-        //                var xP = dfilter.PredictState(ts, F, G, AdaptiveQ.Value);
+        //                var xP = dFilterSharp.PredictState(ts, F, G, AdaptiveQ.Value);
 
         //                var kvp = new KeyValuePair<DateTime, Tuple<Matrix<double>, Matrix<double>>>(dt, Tuple.Create(xP.Item1, xP.Item2));
         //                estimates.Add(kvp);

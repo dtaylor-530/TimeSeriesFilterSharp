@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Filter.Model
+namespace FilterSharp.Model
 {
 
-    // a contract for filters to ensure they have a method that takes two double parameters so that is can be used in with genetic optimisation
+    // a contract for FilterSharps to ensure they have a method that takes two double parameters so that is can be used in with genetic optimisation
     public interface ITwoVariableInitialiser
     {
        

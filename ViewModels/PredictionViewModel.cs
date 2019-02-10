@@ -8,113 +8,101 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Reactive.Linq;
 using GaussianProcess.Wrap;
-using Filter.Model;
-using UtilityWpf.ViewModel;
+using FilterSharp.Model;
 using DynamicData.Binding;
 using System.Reactive.Subjects;
+using DynamicData;
+using ReactiveUI;
 
-
-
-namespace Filter.ViewModel
+namespace FilterSharp.ViewModel
 {
 
-    public class PredictionViewModel : INPCBase
+    public class PredictionViewModel : ReactiveUI.ReactiveObject
     {
+        private object measurementsCollection;
 
-
-        public CollectionViewModel<KeyValuePair<DateTime, double>> SeriesVM { get; set; }
-        public CollectionViewModel<Estimate> PositionPredictionsVM { get; set; }
-        public CollectionViewModel<Estimate> VelocityPredictionsVM { get; set; }
+        public ObservableCollection<KeyValuePair<DateTime, double>> Series { get; set; }
+        public ObservableCollection<Estimate> PositionPredictions { get; set; }
+        public ObservableCollection<Estimate> VelocityPredictions { get; set; }
 
 
 
 
         public PredictionViewModel(
-            IObservable<CollectionViewModel<KeyValuePair<DateTime, double>>> measurements,
-           IObservable<CollectionViewModel<Estimate>> positionestimates,
-           IObservable<CollectionViewModel<Estimate>> velocityestimates = null)
+            IObservable<ObservableCollection<KeyValuePair<DateTime, double>>> measurements,
+           IObservable<ObservableCollection<Estimate>> positionestimates,
+           IObservable<ObservableCollection<Estimate>> velocityestimates = null)
 
         {
-            measurements.Subscribe(a =>
-            {
-                this.SeriesVM = a;
-                NotifyChanged(nameof(SeriesVM));
-            });
+            measurements.ToProperty(this,_=>_.Series);
 
-            positionestimates.Subscribe(bc =>
-            {
-                this.PositionPredictionsVM = bc;
-                NotifyChanged(nameof(PositionPredictionsVM));
-            });
+            positionestimates.ToProperty(this, _ => _.PositionPredictions);
+      
+            velocityestimates?.ToProperty(this, _ => _.VelocityPredictions);
 
-            velocityestimates?.Subscribe(cb =>
-            {
-                this.VelocityPredictionsVM = cb;
-                NotifyChanged(nameof(VelocityPredictionsVM));
-            });
         }
 
 
-        public PredictionViewModel(
-            IObservable<IEnumerable<KeyValuePair<DateTime, double>>> measurements,
-            IObservable<IEnumerable<KeyValuePair<DateTime, Tuple<double, double>[]>>> estimates,
-            IScheduler scheduler, Dispatcher dispatcher)
-        {
-            measurements.ObserveOn(scheduler).Subscribe(a =>
-            {
-            this.SeriesVM = new CollectionViewModel<KeyValuePair<DateTime, double>>(a, dispatcher);
-                NotifyChanged(nameof(SeriesVM));
-            });
+        //public PredictionViewModel(
+        //    IObservable<IEnumerable<KeyValuePair<DateTime, double>>> measurements,
+        //    IObservable<IEnumerable<KeyValuePair<DateTime, Tuple<double, double>[]>>> estimates,
+        //    IScheduler scheduler, Dispatcher dispatcher)
+        //{
+        //    measurements.ObserveOn(scheduler).Subscribe(a =>
+        //    {
+        //    this.SeriesVM = new CollectionViewModel<KeyValuePair<DateTime, double>>(a, dispatcher);
+        //        NotifyChanged(nameof(SeriesVM));
+        //    });
 
-           estimates.ObserveOn(scheduler).Subscribe(bc =>
-            {
-                this.PositionPredictionsVM = new CollectionViewModel<Estimate>(bc.GetPositionEstimates(), dispatcher);
+        //   estimates.ObserveOn(scheduler).Subscribe(bc =>
+        //    {
+        //        this.PositionPredictionsVM = new CollectionViewModel<Estimate>(bc.GetPositionEstimates(), dispatcher);
         
-                this.VelocityPredictionsVM = new CollectionViewModel<Estimate>(bc.GetVelocityEstimates(), dispatcher);
+        //        this.VelocityPredictionsVM = new CollectionViewModel<Estimate>(bc.GetVelocityEstimates(), dispatcher);
 
-                NotifyChanged(nameof(PositionPredictionsVM));
-                NotifyChanged(nameof(VelocityPredictionsVM));
+        //        NotifyChanged(nameof(PositionPredictionsVM));
+        //        NotifyChanged(nameof(VelocityPredictionsVM));
 
-            });
-        }
+        //    });
+        //}
 
 
-        public PredictionViewModel(    IObservable<KeyValuePair<DateTime, double>> measurements,    IObservable<KeyValuePair<DateTime, Tuple<double, double>[]>> estimates,    IScheduler scheduler)
-        {
+        //public PredictionViewModel(    IObservable<KeyValuePair<DateTime, double>> measurements,    IObservable<KeyValuePair<DateTime, Tuple<double, double>[]>> estimates,    IScheduler scheduler)
+        //{
   
-                this.SeriesVM = new CollectionViewModel<KeyValuePair<DateTime, double>>(measurements,scheduler);
-                NotifyChanged(nameof(SeriesVM));
+        //        this.SeriesVM = new CollectionViewModel<KeyValuePair<DateTime, double>>(measurements,scheduler);
+        //        NotifyChanged(nameof(SeriesVM));
           
 
-                this.PositionPredictionsVM = new CollectionViewModel<Estimate>(estimates.Select(_=>_.GetPositionEstimate()),scheduler);
+        //        this.PositionPredictionsVM = new CollectionViewModel<Estimate>(estimates.Select(_=>_.GetPositionEstimate()),scheduler);
 
-                this.VelocityPredictionsVM = new CollectionViewModel<Estimate>(estimates.Select(_=>_.GetVelocityEstimate()),scheduler);
+        //        this.VelocityPredictionsVM = new CollectionViewModel<Estimate>(estimates.Select(_=>_.GetVelocityEstimate()),scheduler);
 
-                NotifyChanged(nameof(PositionPredictionsVM));
-                NotifyChanged(nameof(VelocityPredictionsVM));
+        //        NotifyChanged(nameof(PositionPredictionsVM));
+        //        NotifyChanged(nameof(VelocityPredictionsVM));
 
-        }
+        //}
 
 
-        public PredictionViewModel(IObservable<KeyValuePair<DateTime, double>> measurements, IObservable<IEnumerable<KeyValuePair<DateTime, Tuple<double, double>[]>>> estimates, IScheduler scheduler, Dispatcher dispatcher)
-        {
+        //public PredictionViewModel(IObservable<KeyValuePair<DateTime, double>> measurements, IObservable<IEnumerable<KeyValuePair<DateTime, Tuple<double, double>[]>>> estimates, IScheduler scheduler, Dispatcher dispatcher)
+        //{
 
-            this.SeriesVM = new CollectionViewModel<KeyValuePair<DateTime, double>>(measurements, scheduler);
-            NotifyChanged(nameof(SeriesVM));
+        //    this.SeriesVM = new CollectionViewModel<KeyValuePair<DateTime, double>>(measurements, scheduler);
+        //    NotifyChanged(nameof(SeriesVM));
 
-            estimates.ObserveOn(scheduler).Subscribe(bc =>
-            {
-                this.PositionPredictionsVM = new CollectionViewModel<Estimate>(bc.GetPositionEstimates(),dispatcher);
+        //    estimates.ObserveOn(scheduler).Subscribe(bc =>
+        //    {
+        //        this.PositionPredictionsVM = new CollectionViewModel<Estimate>(bc.GetPositionEstimates(),dispatcher);
 
-                //this.VelocityPredictionsVM = new CollectionViewModel<Estimate>(bc.GetVelocityEstimates());
-                this.VelocityPredictionsVM = new CollectionViewModel<Estimate>(bc.GetDifferences(this.SeriesVM.Items), dispatcher);
+        //        //this.VelocityPredictionsVM = new CollectionViewModel<Estimate>(bc.GetVelocityEstimates());
+        //        this.VelocityPredictionsVM = new CollectionViewModel<Estimate>(bc.GetDifferences(this.SeriesVM.Items), dispatcher);
 
-                NotifyChanged(nameof(PositionPredictionsVM));
-                NotifyChanged(nameof(VelocityPredictionsVM));
+        //        NotifyChanged(nameof(PositionPredictionsVM));
+        //        NotifyChanged(nameof(VelocityPredictionsVM));
 
-            });
+        //    });
 
-        }
+        //}
     }
 
 

@@ -15,7 +15,7 @@ namespace KalmanFilter.Wrap
 
     //public class AEKFKFR : IAdaptiveR
     //{
-    //    // uses kalman filter to modify R And Q
+    //    // uses kalman FilterSharp to modify R And Q
 
     //    DiscreteWrapper dR;
     //    DiscreteKalmanFilter dkf;
@@ -48,7 +48,7 @@ namespace KalmanFilter.Wrap
 
     //public class AEKFKFQ : IAdaptiveQ
     //{
-    //    // uses kalman filter to modify R And Q
+    //    // uses kalman FilterSharp to modify R And Q
 
 
     //    DiscreteWrapper dQ;

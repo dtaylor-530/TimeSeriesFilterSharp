@@ -10,7 +10,7 @@ using Accord.Statistics.Running;
 using System.Collections.ObjectModel;
 
 using System.Reactive.Linq;
-using Filter.Model;
+using FilterSharp.Model;
 
 namespace KalmanFilter.Wrap
 {

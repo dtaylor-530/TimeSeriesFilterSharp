@@ -6,7 +6,7 @@
 //using System.Threading.Tasks;
 //using MathNet.Filtering.Kalman;
 
-//namespace KalmanFilter
+//namespace  KalmanFilter
 //{
 //    public class Discrete
 //    {
@@ -14,7 +14,7 @@
 
 
 //        int _dimensions;
-//        private DiscreteKalmanFilter filter;
+//        private DiscreteKalmanFilter FilterSharp;
 //        private Matrix<double> G;
 
 //        public Matrix<double> Q { get; private set; }
@@ -51,7 +51,7 @@
 //            var P = Mbuilder.Diagonal(_dimensions, _dimensions, 1); //initial state covariance
 
 
-//             filter = new MathNet.Filtering.Kalman.DiscreteKalmanFilter(x, P);
+//             FilterSharp = new MathNet.Filtering.Kalman.DiscreteKalmanFilter(x, P);
 
 
 //            G = Mbuilder.Diagonal(_dimensions, _dimensions, 1); //covariance of process
@@ -71,7 +71,7 @@
 //            R = Mbuilder.Diagonal(_dimensions, _dimensions, r); //covariance of measurement  
 
 
-//            return filter;
+//            return FilterSharp;
 //        }
 
 
@@ -97,17 +97,17 @@
 
 
 
-//                filter.Predict(F, G, Q);
+//                FilterSharp.Predict(F, G, Q);
 
-//                //estimates.Add(new Measurement() { Value = filter.State[0, 0], Time = meas.Time, Variance = filter.Cov[0, 0] });
-//                estimates.Add(new Tuple<Matrix<double>, Matrix<double>>(filter.State, filter.Cov));
+//                //estimates.Add(new Measurement() { Value = FilterSharp.State[0, 0], Time = meas.Time, Variance = FilterSharp.Cov[0, 0] });
+//                estimates.Add(new Tuple<Matrix<double>, Matrix<double>>(FilterSharp.State, FilterSharp.Cov));
 
 
 
 //                //trueValues.Add(new Measurement() { Value = actual, Time = timespan, Variance=0 });
 //                var m = Matrix<double>.Build.DenseOfColumnArrays( new double[] { meas.Item1[0,0] , 0 });
 
-//                filter.Update(m, H, R);             //ukf 
+//                FilterSharp.Update(m, H, R);             //ukf 
 
 
 //            }

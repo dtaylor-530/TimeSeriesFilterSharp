@@ -54,7 +54,7 @@ namespace KalmanFilter.Wrap
 
         MatrixBuilder<double> Mbuilder;
 
-        KalmanFilter.Unscented filter;
+         KalmanFilter.Unscented FilterSharp;
 
 
 
@@ -99,8 +99,8 @@ namespace KalmanFilter.Wrap
             this.n = n;
 
             //int m = 1;
-            filter = new KalmanFilter.Unscented(n, 1);
-            //var adaptivefilter = new KalmanFilter.Adaptive1(alpha);
+            FilterSharp = new  KalmanFilter.Unscented(n, 1);
+            //var adaptiveFilterSharp = new  KalmanFilter.Adaptive1(alpha);
 
 
             R = Matrix.Build.Diagonal(n, n, estimateNoise * estimateNoise); //covariance of measurement  
@@ -132,7 +132,7 @@ namespace KalmanFilter.Wrap
 
             Q= q.Matrix(ts.Ticks);
 
-            var xp = filter.Predict(x, P, f, Q, lastTimeSpan.Ticks);
+            var xp = FilterSharp.Predict(x, P, f, Q, lastTimeSpan.Ticks);
 
             x_ = x.ToArray();
             Means[newdate] = x_;
@@ -160,7 +160,7 @@ namespace KalmanFilter.Wrap
 
             Q = q.Matrix(ts.Ticks);
 
-            var xp = filter.Predict(x, P, f, Q, lastTimeSpan.Ticks);
+            var xp = FilterSharp.Predict(x, P, f, Q, lastTimeSpan.Ticks);
          
 
 
@@ -184,7 +184,7 @@ namespace KalmanFilter.Wrap
 
             var z_ = CheckZ(z);
             var zv = Vbuilder.DenseOfArray(z_);
-            filter.Update(ref x, ref P, zv, h, R);
+            FilterSharp.Update(ref x, ref P, zv, h, R);
 
 
 
@@ -204,7 +204,7 @@ namespace KalmanFilter.Wrap
             {
                 var df = (z[i].Item1.Subtract(lastTimeSpan));
                 Q = q.Matrix((double)df.Days);
-                var xp = filter.Predict(x, P, f, Q, (double)df.Days);
+                var xp = FilterSharp.Predict(x, P, f, Q, (double)df.Days);
 
 
                 x = xp.Item1;
@@ -217,7 +217,7 @@ namespace KalmanFilter.Wrap
                 var zv = Vbuilder.DenseOfArray(z_);
 
 
-                filter.Update(ref x, ref P, zv, h, R);
+                FilterSharp.Update(ref x, ref P, zv, h, R);
 
                 lastTimeSpan = z[i].Item1;
 

@@ -10,7 +10,7 @@ using System.ComponentModel;
 
 using MathNet.Numerics.LinearAlgebra;
 
-using Filter.Model;
+using FilterSharp.Model;
 using GaussianProcess.Wrap;
 
 using System.IO;
@@ -19,11 +19,10 @@ using System.Reflection;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
 using System.Windows.Threading;
-using Filter.Common;
 using System.Windows.Data;
+using ReactiveUI;
 
-
-namespace Filter.ViewModel
+namespace FilterSharp.ViewModel
 {
     public class KernelOutput
     {
@@ -138,7 +137,7 @@ namespace Filter.ViewModel
                         Parameters = _.Parameters,
                         Estimates = o.ToList()
                     };
-                    NotifyChanged(nameof(Outputs));
+                this.RaisePropertyChanged(nameof(Outputs));
 
 
              
@@ -146,35 +145,35 @@ namespace Filter.ViewModel
 
             bool TaskParallelLibrary =false;
 
-            if (TaskParallelLibrary)
-            {
-                var kf = new Filter.Optimisation.TPL();
-                kf.GetOptimisedSolutions(Measurements, Count, TimeSpan.FromSeconds(TimeOutSeconds), kernels[i]).ObserveOn(s).SubscribeOn(TaskPoolScheduler.Default)
-                    .Subscribe(_ => {
-                        //Application.Current.Dispatcher.Invoke(() =>
-                        //{
-                            action6(_);
-                       // });
-                    });
-            }
-            else
-            {
-                var kf = Filter.Optimisation.BGWorker.GetOptimisedSolutions(Measurements, Count, TimeSpan.FromSeconds(TimeOutSeconds), kernels[i])
-                    .TakeUntil(timers[i].GetAwaiter())
-                    .ObserveOn(s)
-                   .Subscribe(_ => action6(_));
-            }
+            //if (TaskParallelLibrary)
+            //{
+            //    var kf = new Filter.Optimisation.TPL();
+            //    kf.GetOptimisedSolutions(Measurements, Count, TimeSpan.FromSeconds(TimeOutSeconds), kernels[i]).ObserveOn(s).SubscribeOn(TaskPoolScheduler.Default)
+            //        .Subscribe(_ => {
+            //            //Application.Current.Dispatcher.Invoke(() =>
+            //            //{
+            //                action6(_);
+            //           // });
+            //        });
+            //}
+            //else
+            //{
+            //    var kf = Filter.Optimisation.BGWorker.GetOptimisedSolutions(Measurements, Count, TimeSpan.FromSeconds(TimeOutSeconds), kernels[i])
+            //        .TakeUntil(timers[i].GetAwaiter())
+            //        .ObserveOn(s)
+            //       .Subscribe(_ => action6(_));
+            //}
 
-            timers[i].ObserveOn(s).Subscribe(_ =>
-            {
-                Timers[i] = _ + 1;
-            },()=>Console.WriteLine("completed timer"));
+            //timers[i].ObserveOn(s).Subscribe(_ =>
+            //{
+            //    Timers[i] = _ + 1;
+            //},()=>Console.WriteLine("completed timer"));
 
 
-            timers[i].GetAwaiter().Subscribe(_ =>
-            {
-                Console.WriteLine("timer ignore elements");
-            });
+            //timers[i].GetAwaiter().Subscribe(_ =>
+            //{
+            //    Console.WriteLine("timer ignore elements");
+            //});
 
         }
 
@@ -210,27 +209,21 @@ namespace Filter.ViewModel
 
             var se = series.Zip(ints, (a, b) => a);
 
-            //se.Subscribe(_ => Console.WriteLine(_));
 
-            var ps = new Service.PredictionService2(se, background);
+            //var ps = new Service.PredictionService2(se, background);
 
-            ps.Predictions.ObserveOn(ui).Subscribe(_ =>
-            {
-                Estimates = new ObservableCollection<Estimate>();
-                VelocityEstimates = new ObservableCollection<Estimate>();
-                NotifyChanged(nameof(Estimates)); NotifyChanged(nameof(VelocityEstimates));
-                //Console.WriteLine("Size: " + _.Item2.Count());
-                foreach (var __ in _)
-                {
-                    Estimates.Add(new Estimate(__.Key, __.Value[0].Item1, __.Value[0].Item2));
-                    VelocityEstimates.Add(new Estimate(__.Key, __.Value[1].Item1, __.Value[1].Item2));
-                    /* Console.WriteLine(__.Key + " " + __.Value);*/
-                }
-            });
-
-            //ps.LastPredictions.ObserveOn(ui).Subscribe(_ =>
+            //ps.Predictions.ObserveOn(ui).Subscribe(_ =>
             //{
-            //    Console.WriteLine("lastPrediction");
+            //    Estimates = new ObservableCollection<Estimate>();
+            //    VelocityEstimates = new ObservableCollection<Estimate>();
+            //    NotifyChanged(nameof(Estimates)); NotifyChanged(nameof(VelocityEstimates));
+            //    //Console.WriteLine("Size: " + _.Item2.Count());
+            //    foreach (var __ in _)
+            //    {
+            //        Estimates.Add(new Estimate(__.Key, __.Value[0].Item1, __.Value[0].Item2));
+            //        VelocityEstimates.Add(new Estimate(__.Key, __.Value[1].Item1, __.Value[1].Item2));
+            //        /* Console.WriteLine(__.Key + " " + __.Value);*/
+            //    }
             //});
 
 
@@ -244,36 +237,12 @@ namespace Filter.ViewModel
 
             var se = series.Zip(ints, (a, b) => a).Publish().RefCount();
 
-            //var se1 = se.Select(_ => new KeyValuePair<DateTime, double>(_.Key, _.Value.Item1));
-
-            //var se2 = se.Select(_ => new KeyValuePair<DateTime, double>(_.Key, _.Value.Item2));
-
-            //se.Subscribe(_ => Console.WriteLine(_));
-
-            var ps = new Service.PredictionService4(se, background);
-            //var ps2 = new Service.PredictionService3(se2, background);
 
 
-            ps.Predictions.ObserveOn(ui).Subscribe(_ =>
-            {
-                Estimates = new ObservableCollection<Estimate>();
-                VelocityEstimates = new ObservableCollection<Estimate>();
-                NotifyChanged(nameof(Estimates)); NotifyChanged(nameof(VelocityEstimates));
-                //Console.WriteLine("Size: " + _.Item2.Count());
-                foreach (var __ in _)
-                {
-                    Estimates.Add(new Estimate(__.Key, __.Value[0].Item1, __.Value[0].Item2));
-                    VelocityEstimates.Add(new Estimate(__.Key, __.Value[1].Item1, __.Value[1].Item2));
-                    /* Console.WriteLine(__.Key + " " + __.Value);*/
-                }
-            });
+            //var ps = new Service.PredictionService4(se, background);
 
-            //ps.Predictions.Zip(ps2.Predictions,(a,b)=>
-            // a.Zip(b, (c, d) => new KeyValuePair<DateTime, Tuple<double, double>[]>(c.Key, Combine(c.Value, d.Value)))
-            //).ObserveOn(ui).Subscribe(_ =>
+            //ps.Predictions.ObserveOn(ui).Subscribe(_ =>
             //{
-
-
             //    Estimates = new ObservableCollection<Estimate>();
             //    VelocityEstimates = new ObservableCollection<Estimate>();
             //    NotifyChanged(nameof(Estimates)); NotifyChanged(nameof(VelocityEstimates));
@@ -286,12 +255,7 @@ namespace Filter.ViewModel
             //    }
             //});
 
-            //ps.LastPredictions.ObserveOn(ui).Subscribe(_ =>
-            //{
-            //    Console.WriteLine("lastPrediction");
-            //});
-
-
+       
 
         }
 
@@ -302,28 +266,6 @@ namespace Filter.ViewModel
         }
     }
 
-    //public static class Helper
-    //{
-
-    //    public static IObservable<T> MergeWithCompleteOnEither<T>(this IObservable<T> source, IObservable<T> right)
-    //    {
-    //        return Observable.Create<T>(obs =>
-    //        {
-    //            var compositeDisposable = new System.Reactive.Disposables.CompositeDisposable();
-    //            var subject = new System.Reactive.Subjects.Subject<T>();
-
-    //            compositeDisposable.Add(subject.Subscribe(obs));
-    //            compositeDisposable.Add(source.Subscribe(subject));
-    //            compositeDisposable.Add(right.Subscribe(subject));
-
-
-    //            return compositeDisposable;
-
-    //        });
-    //    }
-
   
-        
-    //}
 
 }

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Filter.View
+namespace FilterSharp.View
 {
     /// <summary>
     /// Interaction logic for PredictionsUserControl.xaml

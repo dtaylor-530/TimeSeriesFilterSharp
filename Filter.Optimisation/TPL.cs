@@ -1,8 +1,8 @@
 ﻿using AccordGenetic.Wrapper;
-using Filter.Common;
-using Filter.Model;
+using FilterSharp.Model;
 using GaussianProcess;
 using GaussianProcess.Wrap;
+using Statistics.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +14,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using UtilityEnum;
-using UtilityReactive;
 
 namespace Filter.Optimisation
 {

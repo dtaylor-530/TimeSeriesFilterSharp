@@ -1,4 +1,4 @@
-﻿using KalmanFilter;
+﻿using  KalmanFilter;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KalmanFilter.Common
+namespace  KalmanFilter.Common
 {
 
 

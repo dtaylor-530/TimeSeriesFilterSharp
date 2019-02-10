@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ParticleFilter
+namespace ParticleFilterSharp
 {
 
     public interface IReSampler
@@ -34,7 +34,7 @@ namespace ParticleFilter
             var maxCumWeight = cumulativeWeights[Particles.Count - 1];
             var minCumWeight = cumulativeWeights[0];
 
-            var filteredParticles = new List<Particle>();
+            var FilterSharpedParticles = new List<Particle>();
 
             double initialWeight = 1d / Particles.Count;
 
@@ -51,11 +51,11 @@ namespace ParticleFilter
                 var p = Particles[particleIdx];
                 p.Weight = 1d / Particles.Count;
 
-                filteredParticles.Add(p);
+                FilterSharpedParticles.Add(p);
             }
 
 
-            return filteredParticles;
+            return FilterSharpedParticles;
         }
 
 
@@ -138,7 +138,7 @@ namespace ParticleFilter
     }
 
 
-    //https://homes.cs.washington.edu/~todorov/courses/cseP590/16_ParticleFilter.pdf
+    //https://homes.cs.washington.edu/~todorov/courses/cseP590/16_ParticleFilterSharp.pdf
     public class LowVarianceReSampler:IReSampler
     {
 

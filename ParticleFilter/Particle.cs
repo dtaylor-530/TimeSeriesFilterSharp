@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace ParticleFilter
+namespace ParticleFilterSharp
 {
     public class Particle : ICloneable
 

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using Filter.Model;
+using FilterSharp.Model;
 using UtilityWpf.ViewModel;
 using System.Reactive.Subjects;
 using Filter.ViewModel;
@@ -21,12 +21,12 @@ namespace Filter.Controller
 
 
 
-        public static IEnumerable<ButtonDefinition> BuildButtons(ISubject<IEnumerable<KeyValuePair<DateTime, double>>> x)
-        {
-            Action<IEnumerable<KeyValuePair<DateTime, double>>> av = (a) => x.OnNext(a);
+        //public static IEnumerable<ButtonDefinition> BuildButtons(ISubject<IEnumerable<KeyValuePair<DateTime, double>>> x)
+        //{
+        //    Action<IEnumerable<KeyValuePair<DateTime, double>>> av = (a) => x.OnNext(a);
 
-            return ButtonDefinitionFactory.Build(av, typeof(TimeSeries.Service.SignalDefaultGenerator));
-        }
+        //    return ButtonDefinitionFactory.Build(av, typeof(TimeSeries.Service.SignalDefaultGenerator));
+        //}
 
 
 
@@ -41,7 +41,7 @@ namespace Filter.Controller
 
         public static SelectableCollectionViewModel<Type> SelectionViewModelService(IScheduler s)
         {
-            var types = Filter.Common.TypeHelper.GetInheritingTypes(typeof(Filter.Model.IFilterWrapper));
+            var types = Filter.Common.TypeHelper.GetInheritingTypes(typeof(FilterSharp.Model.IFilterWrapper));
 
             return new SelectableCollectionViewModel<Type>(types.ToObservable(), s);
 

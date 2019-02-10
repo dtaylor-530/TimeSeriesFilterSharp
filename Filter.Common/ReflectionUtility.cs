@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Filter.Common
+namespace FilterSharp.Common
 {
     public class TypeHelper
     {
@@ -84,7 +84,7 @@ namespace Filter.Common
         //    Console.WriteLine(typelist[i].Name);
         //}
 
-        public static IEnumerable<Type> FilterByCategoryAttribute(this IEnumerable<Type> types, string category)
+        public static IEnumerable<Type> FilterSharpByCategoryAttribute(this IEnumerable<Type> types, string category)
         {
 
             return types.Where(_ =>

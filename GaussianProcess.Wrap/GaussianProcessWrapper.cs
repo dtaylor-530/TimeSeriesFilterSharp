@@ -7,13 +7,32 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using MathNet.Numerics.LinearAlgebra.Factorization;
-using UtilityReactive;
-using Filter.Model;
-using Filter.Common;
+using FilterSharp.Common;
+using FilterSharp.Model;
+
 
 namespace GaussianProcess.Wrap
 {
-    public class GaussianProcessWrapper : Filter.Model.IFilterWrapper, ITwoVariableInitialiser
+
+    public class GaussianProcessWrapperBuilder:IFilterWrapperBuilder
+    {
+        public  IFilterWrapper Build(double a, double b)
+        {
+
+            return new GaussianProcessWrapper(a, b);
+
+        }
+
+      
+
+
+
+    }
+
+
+
+
+    public class GaussianProcessWrapper : FilterSharp.Model.IFilterWrapper, ITwoVariableInitialiser
     {
 
         public GP2 GaussianProcess { get; set; }
@@ -58,7 +77,7 @@ namespace GaussianProcess.Wrap
                 //double timeSpan = (meas.Key - firstDate).TotalSeconds;
                 //firstDate = default(DateTime) == firstDate ? meas.Key : firstDate;
                 var time = meas.Key.Item2.TotalSeconds;
-                var av = y.Average();
+                var av =measurements.Average(_=>_.Value);
                 var prd = GaussianProcess.Predict(x.ToArray(), y.Select(_=>_-av).ToArray(), time);
                 var pvx = prd.GetPositionsAndVelocities(firstDate,av ).Last();
                 //svd = GaussianProcess.Update(timeSpan, meas.Value);
@@ -122,10 +141,9 @@ namespace GaussianProcess.Wrap
             };
 
 
-            return measurements
-                .IncrementalTimeOffsets()
-                .IncrementalPositionOffsets()
-                .TotalTimeOffsets(df => df.Key.Item1)
+            return
+              FilterSharp.Common.Reactive
+                .TotalTimeOffsets(   FilterSharp.Common.Reactive.IncrementalTimeOffsets(measurements),df => df.Key.Item1)
                 .Scan(seed, (a, b) =>
                {
                    return Task.Run(() =>
@@ -136,10 +154,10 @@ namespace GaussianProcess.Wrap
                        var val = a.y.Count() > 0 ? prd.GetPositionsAndVelocities(b.Item2.Key.Item1 - b.Item1,av).Last()
                     : new KeyValuePair<DateTime, Tuple<double, double>[]>(b.Item2.Key.Item1, new[] { Tuple.Create(0d, 0d), Tuple.Create(0d, 0d) });
 
-                       if (b.Item2.Value.Item1 != null)
+                       if (b.Item2.Value != null)
                        {
                            a.x.Add(b.Item1.TotalSeconds);
-                           a.y.Add((double)b.Item2.Value.Item1);
+                           a.y.Add((double)b.Item2.Value);
                        }
                        return new { x = a.x, y = a.y, val = val };
                    }).Result;

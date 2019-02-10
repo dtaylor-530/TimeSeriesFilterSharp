@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Accord.MachineLearning" Version="3.8.0" />
+    <PackageReference Include="dt_UtilityHelper" Version="1.2.10-alpha" />
+    <PackageReference Include="MathNet.Numerics" Version="4.5.1" />
+    <PackageReference Include="SharpLearning.Containers" Version="0.28.4" />
+    <PackageReference Include="SharpLearning.Metrics" Version="0.28.4" />
+    <PackageReference Include="SharpLearning.Optimization" Version="0.28.4" />
+    <PackageReference Include="UtilityMath" Version="1.0.1-alpha" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\MasterProject\SharpLearning\SharpLearning.Extension\SharpLearning.Extension.csproj" />
+    <ProjectReference Include="..\..\..\MasterProject\StatisticalControls\StatisticalAnalysis\Statistics.Analysis.csproj" />
+    <ProjectReference Include="..\..\..\MasterProject\StatisticalControls\Statistics.Common\Statistics.Common.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -13,8 +13,7 @@ using Newtonsoft.Json;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using GaussianProcess;
 using System.Reflection;
-
-using Filter.Common;
+using UtilityHelper;
 
 namespace GaussianProcess
 {

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TimeSeriesFilter.View
+namespace TimeSeriesFilterSharp.View
 {
     /// <summary>
     /// Interaction logic for VelocityUserControl.xaml

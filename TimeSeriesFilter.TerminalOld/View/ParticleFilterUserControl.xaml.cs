@@ -13,17 +13,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Filter.Common;
-using Filter.ViewModel;
+using FilterSharp.Common;
+using FilterSharp.ViewModel;
 
-namespace TimeSeriesFilter.View
+namespace TimeSeriesFilterSharp.View
 {
     /// <summary>
-    /// Interaction logic for ParticleFilterUserControl.xaml
+    /// Interaction logic for ParticleFilterSharpUserControl.xaml
     /// </summary>
-    public partial class ParticleFilterUserControl : UserControl
+    public partial class ParticleFilterSharpUserControl : UserControl
     {
-        public ParticleFilterUserControl()
+        public ParticleFilterSharpUserControl()
         {
             InitializeComponent();
         }
@@ -31,7 +31,7 @@ namespace TimeSeriesFilter.View
         private void Button_BatchRun(object sender, RoutedEventArgs e)
         {
 
-            var x = new Filter.ViewModel.ParticleFilterViewModel(100, Tuple.Create(0, 0), Tuple.Create(0, 0));
+            var x = new FilterSharp.ViewModel.ParticleFilterSharpViewModel(100, Tuple.Create(0, 0), Tuple.Create(0, 0));
             var dt = new DateTime(1000000000000000);
             x.BatchRun(SignalGenerator.GetPeriodic(dt,100).Select(_=>new KeyValuePair<DateTime,Point>(_.Key,new Point(0,_.Value))), 100, Tuple.Create(-10, 10));
 
@@ -45,7 +45,7 @@ namespace TimeSeriesFilter.View
         //private void Button_FromFile(object sender, RoutedEventArgs e)
         //{
 
-        //    var f = new Filter.ViewModel.ParticleFilterViewModel(100, Tuple.Create(0, 0), Tuple.Create(0, 0));
+        //    var f = new FilterSharp.ViewModel.ParticleFilterSharpViewModel(100, Tuple.Create(0, 0), Tuple.Create(0, 0));
 
         //    f.BatchRun( DataHelper.GetAlterededAppleData(), 100, Tuple.Create(0, 20));
 

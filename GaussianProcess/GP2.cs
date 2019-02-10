@@ -12,7 +12,6 @@ using System.IO;
 using Newtonsoft.Json;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using GaussianProcess;
-using Filter.Model;
 
 namespace GaussianProcess
 {

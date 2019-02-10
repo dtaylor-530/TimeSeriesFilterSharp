@@ -72,13 +72,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\MasterProject\Utility\UtilityReactive\UtilityReactive.csproj">
-      <Project>{B87C92E9-6A33-41FD-B4BD-28D94741A1CC}</Project>
-      <Name>UtilityReactive</Name>
+    <ProjectReference Include="..\Filter.Common\FilterSharp.Common.csproj">
+      <Project>{A74612AD-E860-4D71-B387-2E1C15E5CBA3}</Project>
+      <Name>FilterSharp.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Filter.Model\Filter.Model.csproj">
+    <ProjectReference Include="..\Filter.Model\FilterSharp.Model.csproj">
       <Project>{d8d910cb-f78f-4b5f-bdae-ffdcf51ada43}</Project>
-      <Name>Filter.Model</Name>
+      <Name>FilterSharp.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\ParticleFilter\ParticleFilter.csproj">
       <Project>{0892d9db-541b-42f7-a00c-973851ddadac}</Project>

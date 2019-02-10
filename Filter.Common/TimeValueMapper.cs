@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Filter.Common
+namespace FilterSharp.Common
 {
     public static class TimeValueMapper
     {

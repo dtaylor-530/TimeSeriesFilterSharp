@@ -14,7 +14,7 @@ namespace KalmanFilter.Wrap
 
     public class DefaultAdaptiveR : IAdaptiveR
     {
-        // uses kalman filter to modify R And Q
+        // uses kalman FilterSharp to modify R And Q
 
 
 
@@ -53,7 +53,7 @@ namespace KalmanFilter.Wrap
 
     public class DefaultAdaptiveQ : IAdaptiveQ
     {
-        // uses kalman filter to modify R And Q
+        // uses kalman FilterSharp to modify R And Q
 
 
 

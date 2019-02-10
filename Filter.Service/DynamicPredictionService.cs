@@ -1,6 +1,6 @@
 ﻿using AccordGenetic.Wrapper;
 using Filter.Common;
-using Filter.Model;
+using FilterSharp.Model;
 using Filter.Optimisation;
 using Filter.Service;
 using GaussianProcess.Wrap;
@@ -16,7 +16,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
-using UtilityEnum;
 using UtilityReactive;
 
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Windows.Threading;
 using UtilityWpf.ViewModel;
 
 
@@ -16,12 +17,12 @@ namespace Filter.Controller
         public IEnumerable<ButtonDefinition> Buttons { get; set; }
 
 
-        public TimeSeriesController(ISubject<IEnumerable<KeyValuePair<DateTime,double>>> observable)
+        public TimeSeriesController(ISubject<IEnumerable<KeyValuePair<DateTime,double>>> observable,Dispatcher dis)
         {
 
             Buttons = VMFactory.BuildButtons(observable);
 
-            TimeValueSeries = observable.Select(_ => new CollectionViewModel<KeyValuePair<DateTime, double>>(_)); 
+            TimeValueSeries = observable.Select(_ => new CollectionViewModel<KeyValuePair<DateTime, double>>(_,dis)); 
         }
 
 

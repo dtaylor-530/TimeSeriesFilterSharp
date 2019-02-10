@@ -21,19 +21,20 @@ namespace GaussianProcess
 
         private DistanceMatrix()
         {
-            string fileName = "distance_matrix.json";
-            var path = System.IO.Path.Combine(DirectoryHelper.GetProjectPath(), "Resources", fileName);
-
-            if (File.Exists(path))
-                using (StreamReader r = new StreamReader(path))
+            try
+            {
+                using (var stream = new MemoryStream(ResourceJson.distance_matrix))
+                using (StreamReader r = new StreamReader(stream))
                 {
                     string json = r.ReadToEnd();
                     var matrix = JsonConvert.DeserializeObject<double[][]>(json);
                     Matrix = Matrix<double>.Build.DenseOfRowArrays(matrix);
                     Size = Matrix.RowCount;
                 }
-            else
-            {
+            }
+            catch
+            { 
+
                 var x = Enumerable.Range(0, 100).Select(_ => _ * 0.05).ToArray();
                 var y = new double[100][];
                 for (int i = 0; i < 100; i++)

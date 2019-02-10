@@ -1,13 +1,13 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:pt="http://propertytools.org/wpf"
-                    xmlns:viewmodel="clr-namespace:Filter.ViewModel;assembly=Filter.ViewModel"
+                    xmlns:viewmodel="clr-namespace:FilterSharp.ViewModel;assembly=FilterSharp.ViewModel"
                 >
 
-    <DataTemplate DataType="{x:Type viewmodel:KalmanFilterViewModel}">
+    <!--<DataTemplate DataType="{x:Type viewmodel: KalmanFilterViewModel}">
 
         <UniformGrid DockPanel.Dock="Top" Height="60" Rows="1">
-            <!--<pt:PropertyGrid SelectedObject="{Binding  }"></pt:PropertyGrid>-->
+            --><!--<pt:PropertyGrid SelectedObject="{Binding  }"></pt:PropertyGrid>--><!--
 
 
             <UniformGrid Rows="1">
@@ -43,6 +43,6 @@
 
         </UniformGrid>
 
-    </DataTemplate>
+    </DataTemplate>-->
 
 </ResourceDictionary>

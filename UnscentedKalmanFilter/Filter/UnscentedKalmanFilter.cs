@@ -6,7 +6,7 @@ using System.Linq;
 
 using System.Collections.Generic;
 
-namespace KalmanFilter
+namespace  KalmanFilter
 {
     public class Unscented
     {
@@ -79,7 +79,7 @@ namespace KalmanFilter
 
 
         /// <summary>
-        /// Constructor of Unscented Kalman Filter
+        /// Constructor of Unscented Kalman FilterSharp
         /// </summary>
         /// <param name="L">States number</param>
         /// <param name="m">Measurements number</param>

@@ -7,7 +7,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using Filter.Model;
+using FilterSharp.Model;
 using UtilityWpf.ViewModel;
 using Filter.Common;
 using UtilityReactive;

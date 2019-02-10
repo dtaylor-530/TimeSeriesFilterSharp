@@ -1,6 +1,6 @@
 ﻿
 using Filter.Common;
-using Filter.Model;
+using FilterSharp.Model;
 using Filter.Service;
 
 using GaussianProcess.Wrap;

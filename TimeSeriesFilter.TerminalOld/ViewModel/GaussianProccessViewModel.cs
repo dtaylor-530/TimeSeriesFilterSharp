@@ -10,7 +10,7 @@ using System.ComponentModel;
 
 using MathNet.Numerics.LinearAlgebra;
 
-using Filter.Model;
+using FilterSharp.Model;
 using GaussianProcess.Wrap;
 
 using System.IO;
@@ -19,9 +19,10 @@ using System.Reflection;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
 using System.Windows.Threading;
-using Filter.Common;
+using ReactiveUI;
+using FilterSharp.Common;
 
-namespace Filter.ViewModel
+namespace FilterSharp.ViewModel
 {
 
     
@@ -49,13 +50,13 @@ namespace Filter.ViewModel
         public double Length
         {
             get { return length; }
-            set { if (length != value) { length = value; NotifyChanged(nameof(Length)); KernelChanged(Kernel, value, Noise); } }
+            set { if (length != value) { this.RaiseAndSetIfChanged(ref length, value);  KernelChanged(Kernel, value, Noise); } }
         }
 
         public double Noise
         {
             get { return noise; }
-            set { if (noise != value) { noise = value; NotifyChanged(nameof(Noise)); KernelChanged(Kernel, Length, value); } }
+            set { if (noise != value) { this.RaiseAndSetIfChanged(ref noise, value); KernelChanged(Kernel, Length, value); } }
         }
 
 

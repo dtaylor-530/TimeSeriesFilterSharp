@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Reactive.Linq;
 using GaussianProcess.Wrap;
-using Filter.Model;
-using UtilityWpf.ViewModel;
+using FilterSharp.Model;
 using DynamicData.Binding;
 using System.Reactive.Subjects;
 
@@ -19,34 +18,34 @@ namespace Filter.ViewModel
 
 
 
-    public class AlgorithmViewModel :INPCBase
-    {
-        private ISubject<TwoVariableInput> output;
+    //public class AlgorithmViewModel :INPCBase
+    //{
+    //    private ISubject<TwoVariableInput> output;
 
-        public IOutputViewModel<TwoVariableInput> AlgoVM { get; set; }
+    //    public IOutputViewModel<TwoVariableInput> AlgoVM { get; set; }
 
-        public  ISubject<TwoVariableInput> Output        {            get;set;        }
+    //    public  ISubject<TwoVariableInput> Output        {            get;set;        }
 
-        public CollectionViewModel<ButtonDefinition> SignalButtonsVM { get; set; }
-
-
-        public AlgorithmViewModel(IObservable<IOutputViewModel<TwoVariableInput>> fwvms)
-        {
+    //    public CollectionViewModel<ButtonDefinition> SignalButtonsVM { get; set; }
 
 
-            Output = new Subject<TwoVariableInput>();
+    //    public AlgorithmViewModel(IObservable<IOutputViewModel<TwoVariableInput>> fwvms)
+    //    {
 
-            fwvms.Subscribe(a =>
-            {
-                this.AlgoVM = (a);
 
-                NotifyChanged(nameof(AlgoVM));
+    //        Output = new Subject<TwoVariableInput>();
 
-                a.Output.Subscribe(_ => Output.OnNext(_));
+    //        fwvms.Subscribe(a =>
+    //        {
+    //            this.AlgoVM = (a);
 
-            });
-        }
+    //            NotifyChanged(nameof(AlgoVM));
 
-    }
+    //            a.Output.Subscribe(_ => Output.OnNext(_));
+
+    //        });
+    //    }
+
+    //}
 
 }
