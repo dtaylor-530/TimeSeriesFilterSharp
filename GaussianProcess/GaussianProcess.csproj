@@ -86,11 +86,5 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Filter.Model\FilterSharp.Model.csproj">
-      <Project>{D8D910CB-F78F-4B5F-BDAE-FFDCF51ADA43}</Project>
-      <Name>FilterSharp.Model</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

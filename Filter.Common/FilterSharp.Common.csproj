@@ -67,11 +67,5 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Filter.Model\FilterSharp.Model.csproj">
-      <Project>{d8d910cb-f78f-4b5f-bdae-ffdcf51ada43}</Project>
-      <Name>FilterSharp.Model</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -113,7 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Filter.Common\FilterSharp.Common.csproj">
-      <Project>{a74612ad-e860-4d71-b387-2e1c15e5cba3}</Project>
+      <Project>{A74612AD-E860-4D71-B387-2E1C15E5CBA3}</Project>
       <Name>FilterSharp.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Filter.Model\FilterSharp.Model.csproj">

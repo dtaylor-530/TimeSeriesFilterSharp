@@ -76,7 +76,7 @@
       <Name>FilterSharp.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Filter.Model\FilterSharp.Model.csproj">
-      <Project>{d8d910cb-f78f-4b5f-bdae-ffdcf51ada43}</Project>
+      <Project>{D8D910CB-F78F-4B5F-BDAE-FFDCF51ADA43}</Project>
       <Name>FilterSharp.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\GaussianProcess\GaussianProcess.csproj">
