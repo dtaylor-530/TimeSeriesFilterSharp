@@ -40,8 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adaptive.cs" />
-    <Compile Include="class1.cs" />
-    <Compile Include="Filter\DiscreteKalmanFilter.cs" />
     <Compile Include="IAdaptive.cs" />
     <Compile Include="IFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
